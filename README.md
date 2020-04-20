@@ -50,3 +50,8 @@ make
 This will make a nexuiz-tiny.zip file which contains a working
 Windows version of Nexuiz.
 
+# Downloading the Windows binary
+
+The version of this project pre-built to run on Windows can be downloaded
+[from Sourceforge](https://sourceforge.net/projects/nexuiz-tiny/files/2020-04-20/).
+
