@@ -1,7 +1,7 @@
 all: nexuiz-tiny.zip
 
 clean:
-	rm -fr nexuiz-tiny.zip data-tiny.pk3 common-spod.pk3 nexuiz-tiny/
+	rm -fr nexuiz-tiny.zip data-tiny.pk3 common-spog.pk3 nexuiz-tiny/
 
 data-tiny.pk3: 
 	cd data; zip -r ../data-tiny.zip * ; cd .. ; \
