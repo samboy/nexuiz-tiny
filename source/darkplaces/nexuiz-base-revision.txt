@@ -1,0 +1,11 @@
+Path: .
+URL: svn://svn.icculus.org/twilight/trunk/darkplaces
+Repository Root: svn://svn.icculus.org/twilight
+Repository UUID: d7cf8633-e32d-0410-b094-e92efae38249
+Revision: 7382
+Node Kind: directory
+Schedule: normal
+Last Changed Author: divverent
+Last Changed Rev: 7382
+Last Changed Date: 2007-05-30 10:52:15 +0200 (Wed, 30 May 2007)
+

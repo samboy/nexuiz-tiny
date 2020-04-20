@@ -1,0 +1,1765 @@
+Index: console.c
+===================================================================
+--- console.c	(revision 7382)
++++ console.c	(working copy)
+@@ -25,24 +25,49 @@
+ #include <time.h>
+ #include "quakedef.h"
+ 
+-int con_linewidth;
+-
+ float con_cursorspeed = 4;
+ 
+ #define		CON_TEXTSIZE	131072
++#define		CON_MAXLINES	  4096
+ 
+-// total lines in console scrollback
+-int con_totallines;
+ // lines up from bottom to display
+ int con_backscroll;
+-// where next message will be printed
+-int con_current;
+-// offset in current line for next print
+-int con_x;
++
++// console buffer
+ char con_text[CON_TEXTSIZE];
+ 
++#define CON_MASK_HIDENOTIFY 128
++#define CON_MASK_CHAT 1
++
++typedef struct
++{
++	char *start;
++	int len;
++
++	double addtime;
++	int mask;
++
++	int height; // recalculated line height when needed (-1 to unset)
++}
++con_lineinfo;
++con_lineinfo con_lines[CON_MAXLINES];
++
++int con_lines_first; // cyclic buffer
++int con_lines_count;
++#define CON_LINES_IDX(i) ((con_lines_first + (i)) % CON_MAXLINES)
++#define CON_LINES_LAST CON_LINES_IDX(con_lines_count - 1)
++#define CON_LINES(i) con_lines[CON_LINES_IDX(i)]
++#define CON_LINES_PRED(i) (((i) + CON_MAXLINES - 1) % CON_MAXLINES)
++#define CON_LINES_SUCC(i) (((i) + 1) % CON_MAXLINES)
++
+ cvar_t con_notifytime = {CVAR_SAVE, "con_notifytime","3", "how long notify lines last, in seconds"};
+-cvar_t con_notify = {CVAR_SAVE, "con_notify","4", "how many notify lines to show (0-32)"};
++cvar_t con_notify = {CVAR_SAVE, "con_notify","4", "how many notify lines to show"};
++cvar_t con_notifyalign = {CVAR_SAVE, "con_notifyalign", "", "how to align notify lines: 0 = left, 0.5 = center, 1 = right, empty string = game default)"};
++
++cvar_t con_chattime = {CVAR_SAVE, "con_chattime","30", "how long chat lines last, in seconds"};
++cvar_t con_chat = {CVAR_SAVE, "con_chat","0", "how many chat lines to show"};
++cvar_t con_chatpos = {CVAR_SAVE, "con_chatpos","0", "where to put chat (negative: lines from bottom of screen, positive: lines below notify, 0: at top)"};
++cvar_t con_chatwidth = {CVAR_SAVE, "con_chatwidth","1.0", "relative chat window width"};
+ cvar_t con_textsize = {CVAR_SAVE, "con_textsize","8", "console text size in virtual 2D pixels"};
+ 
+ 
+@@ -53,10 +78,7 @@
+ cvar_t sys_colortranslation = {0, "sys_colortranslation", "1", "terminal console color translation (supported values: 0 = strip color codes, 1 = translate to ANSI codes, 2 = no translation)"};
+ #endif
+ 
+-#define MAX_NOTIFYLINES 32
+-// cl.time time the line was generated for transparent notify lines
+-float con_times[MAX_NOTIFYLINES];
+-
++int con_linewidth;
+ int con_vislines;
+ 
+ qboolean con_initialized;
+@@ -267,7 +289,7 @@
+ {
+ 	// toggle the 'user wants console' bit
+ 	key_consoleactive ^= KEY_CONSOLEACTIVE_USER;
+-	memset (con_times, 0, sizeof(con_times));
++	Con_ClearNotify();
+ }
+ 
+ /*
+@@ -277,22 +299,22 @@
+ */
+ void Con_Clear_f (void)
+ {
+-	if (con_text)
+-		memset (con_text, ' ', CON_TEXTSIZE);
++	con_lines_count = 0;
+ }
+ 
+ 
+ /*
+ ================
+ Con_ClearNotify
++
++Clear all notify lines.
+ ================
+ */
+ void Con_ClearNotify (void)
+ {
+ 	int i;
+-
+-	for (i=0 ; i<MAX_NOTIFYLINES ; i++)
+-		con_times[i] = 0;
++	for(i = 0; i < con_lines_count; ++i)
++		CON_LINES(i).mask |= CON_MASK_HIDENOTIFY;
+ }
+ 
+ 
+@@ -329,9 +351,8 @@
+ */
+ void Con_CheckResize (void)
+ {
+-	int i, j, width, oldwidth, oldtotallines, numlines, numchars;
++	int i, width, oldwidth;
+ 	float f;
+-	char tbuf[CON_TEXTSIZE];
+ 
+ 	f = bound(1, con_textsize.value, 128);
+ 	if(f != con_textsize.value)
+@@ -344,35 +365,12 @@
+ 
+ 	oldwidth = con_linewidth;
+ 	con_linewidth = width;
+-	oldtotallines = con_totallines;
+-	con_totallines = CON_TEXTSIZE / con_linewidth;
+-	numlines = oldtotallines;
+ 
+-	if (con_totallines < numlines)
+-		numlines = con_totallines;
++	for(i = 0; i < con_lines_count; ++i)
++		CON_LINES(i).height = -1; // recalculate when next needed
+ 
+-	numchars = oldwidth;
+-
+-	if (con_linewidth < numchars)
+-		numchars = con_linewidth;
+-
+-	memcpy (tbuf, con_text, CON_TEXTSIZE);
+-	memset (con_text, ' ', CON_TEXTSIZE);
+-
+-	for (i=0 ; i<numlines ; i++)
+-	{
+-		for (j=0 ; j<numchars ; j++)
+-		{
+-			con_text[(con_totallines - 1 - i) * con_linewidth + j] =
+-					tbuf[((con_current - i + oldtotallines) %
+-						  oldtotallines) * oldwidth + j];
+-		}
+-	}
+-
+-	Con_ClearNotify ();
+-
++	Con_ClearNotify();
+ 	con_backscroll = 0;
+-	con_current = con_totallines - 1;
+ }
+ 
+ //[515]: the simplest command ever
+@@ -392,11 +390,8 @@
+ 
+ void Con_ConDump_f (void)
+ {
+-	int i, l;
+-	qboolean allblankssofar;
+-	const char *text;
++	int i;
+ 	qfile_t *file;
+-	char temp[MAX_INPUTLINE+2];
+ 	if (Cmd_Argc() != 2)
+ 	{
+ 		Con_Printf("usage: condump <filename>\n");
+@@ -408,25 +403,10 @@
+ 		Con_Printf("condump: unable to write file \"%s\"\n", Cmd_Argv(1));
+ 		return;
+ 	}
+-	// iterate over the entire console history buffer line by line
+-	allblankssofar = true;
+-	for (i = 0;i < con_totallines;i++)
++	for(i = 0; i < con_lines_count; ++i)
+ 	{
+-		text = con_text + ((con_current + 1 + i) % con_totallines)*con_linewidth;
+-		// count the used characters on this line
+-		for (l = min(con_linewidth, (int)sizeof(temp));l > 0 && text[l-1] == ' ';l--);
+-		// if not a blank line, begin output
+-		if (l)
+-			allblankssofar = false;
+-		// output the current line to the file
+-		if (!allblankssofar)
+-		{
+-			if (l)
+-				memcpy(temp, text, l);
+-			temp[l] = '\n';
+-			temp[l+1] = 0;
+-			FS_Print(file, temp);
+-		}
++		FS_Write(file, CON_LINES(i).start, CON_LINES(i).len);
++		FS_Write(file, "\n", 1);
+ 	}
+ 	FS_Close(file);
+ }
+@@ -438,9 +418,9 @@
+ */
+ void Con_Init (void)
+ {
+-	memset (con_text, ' ', CON_TEXTSIZE);
+ 	con_linewidth = 80;
+-	con_totallines = CON_TEXTSIZE / con_linewidth;
++	con_lines_first = 0;
++	con_lines_count = 0;
+ 
+ 	// Allocate a log queue, this will be freed after configs are parsed
+ 	logq_size = MAX_INPUTLINE;
+@@ -460,6 +440,11 @@
+ 	// register our cvars
+ 	Cvar_RegisterVariable (&con_notifytime);
+ 	Cvar_RegisterVariable (&con_notify);
++	Cvar_RegisterVariable (&con_notifyalign);
++	Cvar_RegisterVariable (&con_chattime);
++	Cvar_RegisterVariable (&con_chat);
++	Cvar_RegisterVariable (&con_chatpos);
++	Cvar_RegisterVariable (&con_chatwidth);
+ 	Cvar_RegisterVariable (&con_textsize);
+ 
+ 	// register our commands
+@@ -476,92 +461,185 @@
+ 
+ 
+ /*
+-===============
+-Con_Linefeed
+-===============
++================
++Con_DeleteLine
++
++Deletes the first line from the console history.
++================
+ */
+-void Con_Linefeed (void)
++void Con_DeleteLine()
+ {
+-	if (con_backscroll)
+-		con_backscroll++;
++	if(con_lines_count == 0)
++		return;
++	--con_lines_count;
++	con_lines_first = CON_LINES_IDX(1);
++}
+ 
+-	con_x = 0;
+-	con_current++;
+-	memset (&con_text[(con_current%con_totallines)*con_linewidth], ' ', con_linewidth);
++/*
++================
++Con_DeleteLastLine
++
++Deletes the last line from the console history.
++================
++*/
++void Con_DeleteLastLine()
++{
++	if(con_lines_count == 0)
++		return;
++	--con_lines_count;
+ }
+ 
+ /*
+ ================
+-Con_PrintToHistory
++Con_BytesLeft
+ 
+-Handles cursor positioning, line wrapping, etc
+-All console printing must go through this in order to be displayed
+-If no console is visible, the notify window will pop up.
++Checks if there is space for a line of the given length, and if yes, returns a
++pointer to the start of such a space, and NULL otherwise.
+ ================
+ */
+-void Con_PrintToHistory(const char *txt, int mask)
++char *Con_BytesLeft(int len)
+ {
+-	int y, c, l;
+-	static int cr;
+-
+-	while ( (c = *txt) )
++	if(len > CON_TEXTSIZE)
++		return NULL;
++	if(con_lines_count == 0)
++		return con_text;
++	else
+ 	{
+-	// count word length
+-		for (l=0 ; l< con_linewidth ; l++)
+-			if ( txt[l] <= ' ')
+-				break;
+-
+-	// word wrap
+-		if (l != con_linewidth && (con_x + l > con_linewidth) )
+-			con_x = 0;
+-
+-		txt++;
+-
+-		if (cr)
++		char *firstline_start = con_lines[con_lines_first].start;
++		char *lastline_onepastend = con_lines[CON_LINES_LAST].start + con_lines[CON_LINES_LAST].len;
++		// the buffer is cyclic, so we first have two cases...
++		if(firstline_start < lastline_onepastend) // buffer is contiguous
+ 		{
+-			con_current--;
+-			cr = false;
++			// put at end?
++			if(len <= con_text + CON_TEXTSIZE - lastline_onepastend)
++				return lastline_onepastend;
++			// put at beginning?
++			else if(len <= firstline_start - con_text)
++				return con_text;
++			else
++				return NULL;
+ 		}
++		else // buffer has a contiguous hole
++		{
++			if(len <= firstline_start - lastline_onepastend)
++				return lastline_onepastend;
++			else
++				return NULL;
++		}
++	}
++}
+ 
++/*
++================
++Con_FixTimes
+ 
+-		if (!con_x)
++Notifies the console code about the current time
++(and shifts back times of other entries when the time
++went backwards)
++================
++*/
++void Con_FixTimes()
++{
++	int i;
++	if(con_lines_count >= 1)
++	{
++		double diff = cl.time - (con_lines + CON_LINES_LAST)->addtime;
++		if(diff < 0)
+ 		{
+-			Con_Linefeed ();
+-		// mark time for transparent overlay
+-			if (con_current >= 0)
+-			{
+-				if (con_notify.integer < 0)
+-					Cvar_SetValueQuick(&con_notify, 0);
+-				if (con_notify.integer > MAX_NOTIFYLINES)
+-					Cvar_SetValueQuick(&con_notify, MAX_NOTIFYLINES);
+-				if (con_notify.integer > 0)
+-					con_times[con_current % con_notify.integer] = cl.time;
+-			}
++			for(i = 0; i < con_lines_count; ++i)
++				CON_LINES(i).addtime += diff;
+ 		}
++	}
++}
+ 
+-		switch (c)
+-		{
+-		case '\n':
+-			con_x = 0;
+-			break;
++/*
++================
++Con_AddLine
+ 
+-		case '\r':
+-			con_x = 0;
+-			cr = 1;
+-			break;
++Appends a given string as a new line to the console.
++================
++*/
++void Con_AddLine(const char *line, int len, int mask)
++{
++	char *putpos;
++	con_lineinfo *p;
+ 
+-		default:	// display character and advance
+-			y = con_current % con_totallines;
+-			con_text[y*con_linewidth+con_x] = c | mask;
+-			con_x++;
+-			if (con_x >= con_linewidth)
+-				con_x = 0;
+-			break;
+-		}
++	Con_FixTimes();
+ 
++	if(len >= CON_TEXTSIZE)
++	{
++		// line too large?
++		// only display end of line.
++		line += len - CON_TEXTSIZE + 1;
++		len = CON_TEXTSIZE - 1;
+ 	}
++	while(!(putpos = Con_BytesLeft(len + 1)) || con_lines_count >= CON_MAXLINES)
++		Con_DeleteLine();
++	memcpy(putpos, line, len);
++	putpos[len] = 0;
++	++con_lines_count;
++
++	//fprintf(stderr, "Now have %d lines (%d -> %d).\n", con_lines_count, con_lines_first, CON_LINES_LAST);
++
++	p = con_lines + CON_LINES_LAST;
++	p->start = putpos;
++	p->len = len;
++	p->addtime = cl.time;
++	p->mask = mask;
++	p->height = -1; // calculate when needed
+ }
+ 
++/*
++================
++Con_PrintToHistory
++
++Handles cursor positioning, line wrapping, etc
++All console printing must go through this in order to be displayed
++If no console is visible, the notify window will pop up.
++================
++*/
++void Con_PrintToHistory(const char *txt, int mask)
++{
++	// process:
++	//   \n goes to next line
++	//   \r deletes current line and makes a new one
++
++	static int cr_pending = 0;
++	static char buf[CON_TEXTSIZE];
++	static int bufpos = 0;
++
++	for(; *txt; ++txt)
++	{
++		if(cr_pending)
++		{
++			Con_DeleteLastLine();
++			cr_pending = 0;
++		}
++		switch(*txt)
++		{
++			case 0:
++				break;
++			case '\r':
++				Con_AddLine(buf, bufpos, mask);
++				bufpos = 0;
++				cr_pending = 1;
++				break;
++			case '\n':
++				Con_AddLine(buf, bufpos, mask);
++				bufpos = 0;
++				break;
++			default:
++				buf[bufpos++] = *txt;
++				if(bufpos >= CON_TEXTSIZE - 1)
++				{
++					Con_AddLine(buf, bufpos, mask);
++					bufpos = 0;
++				}
++				break;
++		}
++	}
++}
++
+ /* The translation table between the graphical font and plain ASCII  --KB */
+ static char qfont_table[256] = {
+ 	'\0', '#',  '#',  '#',  '#',  '.',  '#',  '#',
+@@ -611,7 +689,7 @@
+ extern qboolean sys_nostdout;
+ void Con_Print(const char *msg)
+ {
+-	int mask = 0;
++	static int mask = 0;
+ 	static int index = 0;
+ 	static char line[MAX_INPUTLINE];
+ 
+@@ -637,10 +715,21 @@
+ 				// play talk wav
+ 				if (*msg == 1)
+ 				{
+-					if (msg[1] == '(' && cl.foundtalk2wav)
+-						S_LocalSound ("sound/misc/talk2.wav");
++					if(gamemode == GAME_NEXUIZ)
++					{
++						if(msg[1] == '\r' && cl.foundtalk2wav)
++							S_LocalSound ("sound/misc/talk2.wav");
++						else
++							S_LocalSound ("sound/misc/talk.wav");
++					}
+ 					else
+-						S_LocalSound ("sound/misc/talk.wav");
++					{
++						if (msg[1] == '(' && cl.foundtalk2wav)
++							S_LocalSound ("sound/misc/talk2.wav");
++						else
++							S_LocalSound ("sound/misc/talk.wav");
++					}
++					mask = CON_MASK_CHAT;
+ 				}
+ 				line[index++] = STRING_COLOR_TAG;
+ 				line[index++] = '3';
+@@ -662,7 +751,10 @@
+ 			Log_ConPrint(line);
+ 			// send to scrollable buffer
+ 			if (con_initialized && cls.state != ca_dedicated)
++			{
+ 				Con_PrintToHistory(line, mask);
++				mask = 0;
++			}
+ 			// send to terminal or dedicated server window
+ 			if (!sys_nostdout)
+ 			{
+@@ -936,7 +1028,150 @@
+ //	key_lines[edit_line][key_linepos] = 0;
+ }
+ 
++typedef struct
++{
++	float alignment; // 0 = left, 0.5 = center, 1 = right
++	float fontsize;
++	float x;
++	float y;
++	float width;
++	float ymin, ymax;
++	const char *continuationString;
+ 
++	// PRIVATE:
++	int colorindex; // init to -1
++	char previous;
++	float previousWidth;
++}
++con_text_info_t;
++
++float Con_CharWidthFunc(void *passthrough, char c)
++{
++	con_text_info_t *ti = (con_text_info_t *) passthrough;
++	float w = ti->fontsize; // for proportional fonts, change THIS
++	char prev = ti->previous;
++	float prevW = ti->previousWidth;
++	ti->previous = c;
++	ti->previousWidth = w;
++
++	if(c == 0)
++	{
++		ti->colorindex = -1;
++		return 0;
++	}
++
++	if(prev == STRING_COLOR_TAG)
++		if(c >= '0' && c <= '9')
++			return -prevW;
++		else
++			return w;
++	else
++		return w;
++}
++
++int Con_CountLineFunc(void *passthrough, const char *line, size_t length, float width, qboolean isContinuation)
++{
++	(void) passthrough;
++	(void) line;
++	(void) length;
++	(void) width;
++	(void) isContinuation;
++	return 1;
++}
++
++int Con_DisplayLineFunc(void *passthrough, const char *line, size_t length, float width, qboolean isContinuation)
++{
++	con_text_info_t *ti = (con_text_info_t *) passthrough;
++
++	if(ti->y < ti->ymin - 0.001)
++		(void) 0;
++	else if(ti->y > ti->ymax - ti->fontsize + 0.001)
++		(void) 0;
++	else
++	{
++		int x = ti->x + (ti->width - width) * ti->alignment;
++		if(isContinuation && *ti->continuationString)
++			x += DrawQ_String(x, ti->y, ti->continuationString, strlen(ti->continuationString), ti->fontsize, ti->fontsize, 1.0, 1.0, 1.0, 1.0, 0, NULL, false);
++		DrawQ_String(x, ti->y, line, length, ti->fontsize, ti->fontsize, 1.0, 1.0, 1.0, 1.0, 0, &(ti->colorindex), false);
++	}
++
++	ti->y += ti->fontsize;
++	return 1;
++}
++
++
++int Con_DrawNotifyRect(int mask_must, int mask_mustnot, float maxage, float x, float y, float width, float height, float fontsize, float alignment_x, float alignment_y, const char *continuationString)
++{
++	int i;
++	int lines = 0;
++	int maxlines = (int) floor(height / fontsize + 0.01f);
++	int startidx;
++	int nskip = 0;
++	int continuationWidth = 0;
++	double t = cl.time; // saved so it won't change
++	con_text_info_t ti;
++
++	ti.fontsize = fontsize;
++	ti.alignment = alignment_x;
++	ti.width = width;
++	ti.ymin = y;
++	ti.ymax = y + height;
++	ti.continuationString = continuationString;
++
++	Con_CharWidthFunc(&ti, 0);
++	while(*continuationString)
++		continuationWidth += Con_CharWidthFunc(&ti, *continuationString++);
++
++	// first find the first line to draw by backwards iterating and word wrapping to find their length...
++	startidx = con_lines_count;
++	for(i = con_lines_count - 1; i >= 0; --i)
++	{
++		con_lineinfo *l = &CON_LINES(i);
++		int mylines;
++
++		if((l->mask & mask_must) != mask_must)
++			continue;
++		if(l->mask & mask_mustnot)
++			continue;
++		if(maxage && (l->addtime < t - maxage))
++			continue;
++		
++		// WE FOUND ONE!
++		// Calculate its actual height...
++		mylines = COM_Wordwrap(l->start, l->len, continuationWidth, width, Con_CharWidthFunc, &ti, Con_CountLineFunc, &ti);
++		if(lines + mylines >= maxlines)
++		{
++			nskip = lines + mylines - maxlines;
++			lines = maxlines;
++			startidx = i;
++			break;
++		}
++		lines += mylines;
++		startidx = i;
++	}
++
++	// then center according to the calculated amount of lines...
++	ti.x = x;
++	ti.y = y + alignment_y * (height - lines * fontsize) - nskip * fontsize;
++
++	// then actually draw
++	for(i = startidx; i < con_lines_count; ++i)
++	{
++		con_lineinfo *l = &CON_LINES(i);
++
++		if((l->mask & mask_must) != mask_must)
++			continue;
++		if(l->mask & mask_mustnot)
++			continue;
++		if(maxage && (l->addtime < t - maxage))
++			continue;
++
++		COM_Wordwrap(l->start, l->len, continuationWidth, width, Con_CharWidthFunc, &ti, Con_DisplayLineFunc, &ti);
++	}
++
++	return lines;
++}
++
+ /*
+ ================
+ Con_DrawNotify
+@@ -947,64 +1182,85 @@
+ void Con_DrawNotify (void)
+ {
+ 	float	x, v;
+-	char	*text;
+-	int		i, stop;
+-	float	time;
++	float chatstart, notifystart;
++	float align;
+ 	char	temptext[MAX_INPUTLINE];
+-	int colorindex = -1; //-1 for default
++	int numChatlines;
++	int chatpos;
+ 
++	Con_FixTimes();
++
++#if 0
++	{
++		double t0 = -99999999999;
++		int i;
++		for(i = 0; i < con_lines_count; ++i)
++		{
++			double t = CON_LINES(i).addtime;
++			if(t < t0)
++				printf("CONSOLE TIME WENT BACKWARDS:\n%f %.*s\n%f %.*s\n",
++					CON_LINES(i-1).addtime, CON_LINES(i-1).len, CON_LINES(i-1).start, 
++					CON_LINES(i).addtime, CON_LINES(i).len, CON_LINES(i).start);
++			t0 = t;
++		}
++	}
++#endif
++
++	numChatlines = con_chat.integer;
++	chatpos = con_chatpos.integer;
++
+ 	if (con_notify.integer < 0)
+ 		Cvar_SetValueQuick(&con_notify, 0);
+-	if (con_notify.integer > MAX_NOTIFYLINES)
+-		Cvar_SetValueQuick(&con_notify, MAX_NOTIFYLINES);
+ 	if (gamemode == GAME_TRANSFUSION)
+-		v = 8;
++		v = 8; // vertical offset
+ 	else
+ 		v = 0;
+-	// make a copy of con_current here so that we can't get in a runaway loop printing new messages while drawing the notify text
+-	stop = con_current;
+-	for (i= stop-con_notify.integer+1 ; i<=stop ; i++)
++
++	// GAME_NEXUIZ: center, otherwise left justify
++	align = con_notifyalign.value;
++	if(!*con_notifyalign.string) // empty string, evaluated to 0 above
+ 	{
++		if(gamemode == GAME_NEXUIZ)
++			align = 0.5;
++	}
+ 
+-		if (i < 0)
+-			continue;
+-		time = con_times[i % con_notify.integer];
+-		if (time == 0)
+-			continue;
+-		time = cl.time - time;
+-		if (time > con_notifytime.value)
+-			continue;
+-		text = con_text + (i % con_totallines)*con_linewidth;
++	if(numChatlines)
++	{
++		if(chatpos == 0)
++		{
++			// first chat, input line, then notify
++			chatstart = v;
++			notifystart = v + (numChatlines + 1) * con_textsize.value;
++		}
++		else if(chatpos > 0)
++		{
++			// first notify, then (chatpos-1) empty lines, then chat, then input
++			notifystart = v;
++			chatstart = v + (con_notify.value + (chatpos - 1)) * con_textsize.value;
++		}
++		else // if(chatpos < 0)
++		{
++			// first notify, then much space, then chat, then input, then -chatpos-1 empty lines
++			notifystart = v;
++			chatstart = vid_conheight.value - (-chatpos-1 + numChatlines + 1) * con_textsize.value;
++		}
++	}
++	else
++	{
++		// just notify and input
++		notifystart = v;
++		chatstart = 0; // shut off gcc warning
++	}
+ 
+-		if (gamemode == GAME_NEXUIZ) {
+-			int chars = 0;
+-			int finalchars = 0;
+-			int j;
++	v = notifystart + con_textsize.value * Con_DrawNotifyRect(0, CON_MASK_HIDENOTIFY | (numChatlines ? CON_MASK_CHAT : 0), con_notifytime.value, 0, notifystart, vid_conwidth.value, con_notify.value * con_textsize.value, con_textsize.value, align, 0.0, "");
+ 
+-			// count up to the last non-whitespace, and ignore color codes
+-			for (j = 0;j < con_linewidth && text[j];j++)
+-			{
+-				if (text[j] == STRING_COLOR_TAG && (text[j+1] >= '0' && text[j+1] <= '9'))
+-				{
+-					j++;
+-					continue;
+-				}
+-				chars++;
+-				if (text[j] == ' ')
+-					continue;
+-				finalchars = chars;
+-			}
+-			// center the line using the calculated width
+-			x = (vid_conwidth.integer - finalchars * con_textsize.value) * 0.5;
+-		} else
+-			x = 0;
+-
+-		DrawQ_String( x, v, text, con_linewidth, con_textsize.value, con_textsize.value, 1.0, 1.0, 1.0, 1.0, 0, &colorindex, false );
+-
+-		v += con_textsize.value;
++	// chat?
++	if(numChatlines)
++	{
++		v = chatstart + numChatlines * con_textsize.value;
++		Con_DrawNotifyRect(CON_MASK_CHAT, 0, con_chattime.value, 0, chatstart, vid_conwidth.value * con_chatwidth.value, v - chatstart, con_textsize.value, 0.0, 1.0, "^3\014\014\014 "); // 015 is ·> character in conchars.tga
+ 	}
+ 
+-
+ 	if (key_dest == key_message)
+ 	{
+ 		int colorindex = -1;
+@@ -1032,6 +1288,103 @@
+ 
+ /*
+ ================
++Con_MeasureConsoleLine
++
++Counts the number of lines for a line on the console.
++================
++*/
++int Con_MeasureConsoleLine(int lineno)
++{
++	float width = vid_conwidth.value;
++	con_text_info_t ti;
++	ti.fontsize = con_textsize.value;
++
++	return COM_Wordwrap(con_lines[lineno].start, con_lines[lineno].len, 0, width, Con_CharWidthFunc, &ti, Con_CountLineFunc, NULL);
++}
++
++/*
++================
++Con_LineHeight
++
++Returns the height of a given console line; calculates it if necessary.
++================
++*/
++int Con_LineHeight(int i)
++{
++	int h = con_lines[i].height;
++	if(h != -1)
++		return h;
++	return con_lines[i].height = Con_MeasureConsoleLine(i);
++}
++
++/*
++================
++Con_DrawConsoleLine
++
++Draws a line of the console; returns its height in lines.
++If alpha is 0, the line is not drawn, but still wrapped and its height
++returned.
++================
++*/
++int Con_DrawConsoleLine(float y, int lineno, float ymin, float ymax)
++{
++	float width = vid_conwidth.value;
++
++	con_text_info_t ti;
++	ti.continuationString = "";
++	ti.alignment = 0;
++	ti.fontsize = con_textsize.value;
++	ti.x = 0;
++	ti.y = y - (Con_LineHeight(lineno) - 1) * ti.fontsize;
++	ti.ymin = ymin;
++	ti.ymax = ymax;
++	ti.width = width;
++
++	return COM_Wordwrap(con_lines[lineno].start, con_lines[lineno].len, 0, width, Con_CharWidthFunc, &ti, Con_DisplayLineFunc, &ti);
++}
++
++/*
++================
++Con_LastVisibleLine
++
++Calculates the last visible line index and how much to show of it based on
++con_backscroll.
++================
++*/
++void Con_LastVisibleLine(int *last, int *limitlast)
++{
++	int lines_seen = 0;
++	int ic;
++
++	if(con_backscroll < 0)
++		con_backscroll = 0;
++
++	// now count until we saw con_backscroll actual lines
++	for(ic = 0; ic < con_lines_count; ++ic)
++	{
++		int i = CON_LINES_IDX(con_lines_count - 1 - ic);
++		int h = Con_LineHeight(i);
++
++		// line is the last visible line?
++		if(lines_seen + h > con_backscroll && lines_seen <= con_backscroll)
++		{
++			*last = i;
++			*limitlast = lines_seen + h - con_backscroll;
++			return;
++		}
++
++		lines_seen += h;
++	}
++
++	// if we get here, no line was on screen - scroll so that one line is
++	// visible then.
++	con_backscroll = lines_seen - 1;
++	*last = con_lines_first;
++	*limitlast = 1;
++}
++
++/*
++================
+ Con_DrawConsole
+ 
+ Draws the console with the solid background
+@@ -1040,32 +1393,39 @@
+ */
+ void Con_DrawConsole (int lines)
+ {
+-	int i, rows, j, stop;
++	int i, last, limitlast;
+ 	float y;
+-	char *text;
+-	int colorindex = -1;
+ 
+ 	if (lines <= 0)
+ 		return;
+ 
++	con_vislines = lines;
++
+ // draw the background
+-	DrawQ_Pic(0, lines - vid_conheight.integer, scr_conbrightness.value >= 0.01f ? Draw_CachePic("gfx/conback", true) : NULL, vid_conwidth.integer, vid_conheight.integer, scr_conbrightness.value, scr_conbrightness.value, scr_conbrightness.value, scr_conalpha.value, 0);
++	DrawQ_Pic(0, lines - vid_conheight.integer, scr_conbrightness.value >= 0.01f ? Draw_CachePic("gfx/conback", true) : NULL, vid_conwidth.integer, vid_conheight.integer, scr_conbrightness.value, scr_conbrightness.value, scr_conbrightness.value, cls.signon == SIGNONS ? scr_conalpha.value : 1.0, 0); // always full alpha when not in game
+ 	DrawQ_String(vid_conwidth.integer - strlen(engineversion) * con_textsize.value - con_textsize.value, lines - con_textsize.value, engineversion, 0, con_textsize.value, con_textsize.value, 1, 0, 0, 1, 0, NULL, true);
+ 
+ // draw the text
+-	con_vislines = lines;
++	if(con_lines_count > 0)
++	{
++		float ymax = con_vislines - 2 * con_textsize.value;
++		Con_LastVisibleLine(&last, &limitlast);
++		y = ymax - con_textsize.value;
+ 
+-	rows = (int)ceil((lines/con_textsize.value)-2);		// rows of text to draw
+-	y = lines - (rows+2)*con_textsize.value;	// may start slightly negative
++		if(limitlast)
++			y += (con_lines[last].height - limitlast) * con_textsize.value;
++		i = last;
+ 
+-	// make a copy of con_current here so that we can't get in a runaway loop printing new messages while drawing the notify text
+-	stop = con_current;
+-	for (i = stop - rows + 1;i <= stop;i++, y += con_textsize.value)
+-	{
+-		j = max(i - con_backscroll, 0);
+-		text = con_text + (j % con_totallines)*con_linewidth;
+-
+-		DrawQ_String( 0, y, text, con_linewidth, con_textsize.value, con_textsize.value, 1.0, 1.0, 1.0, 1.0, 0, &colorindex, false );
++		for(;;)
++		{
++			y -= Con_DrawConsoleLine(y, i, 0, ymax) * con_textsize.value;
++			if(i == con_lines_first)
++				break; // top of console buffer
++			if(y < 0)
++				break; // top of console window
++			limitlast = 0;
++			i = CON_LINES_PRED(i);
++		}
+ 	}
+ 
+ // draw the input prompt, user text, and cursor if desired
+Index: cl_screen.c
+===================================================================
+--- cl_screen.c	(revision 7382)
++++ cl_screen.c	(working copy)
+@@ -56,6 +56,7 @@
+ qboolean	scr_initialized;		// ready to draw
+ 
+ float		scr_con_current;
++int			scr_con_margin_bottom;
+ 
+ extern int	con_vislines;
+ 
+@@ -437,10 +438,12 @@
+ */
+ static int SCR_DrawQWDownload(int offset)
+ {
++	// sync with SCR_DownloadHeight
+ 	int len;
+ 	float x, y;
+ 	float size = 8;
+ 	char temp[256];
++
+ 	if (!cls.qw_downloadname[0])
+ 	{
+ 		cls.qw_downloadspeedrate = 0;
+@@ -461,7 +464,7 @@
+ 	len = (int)strlen(temp);
+ 	x = (vid_conwidth.integer - len*size) / 2;
+ 	y = vid_conheight.integer - size - offset;
+-	DrawQ_Fill(0, y, vid_conwidth.integer, size, 0, 0, 0, 0.5, 0);
++	DrawQ_Fill(0, y, vid_conwidth.integer, size, 0, 0, 0, cls.signon == SIGNONS ? 0.5 : 1, 0);
+ 	DrawQ_String(x, y, temp, len, size, size, 1, 1, 1, 1, 0, NULL, true);
+ 	return 8;
+ }
+@@ -473,6 +476,7 @@
+ */
+ static int SCR_DrawCurlDownload(int offset)
+ {
++	// sync with SCR_DownloadHeight
+ 	int len;
+ 	int nDownloads;
+ 	int i;
+@@ -492,7 +496,7 @@
+ 	{
+ 		len = (int)strlen(addinfo);
+ 		x = (vid_conwidth.integer - len*size) / 2;
+-		DrawQ_Fill(0, y - size, vid_conwidth.integer, size, 1, 1, 1, 0.8, 0);
++		DrawQ_Fill(0, y - size, vid_conwidth.integer, size, 1, 1, 1, cls.signon == SIGNONS ? 0.8 : 1, 0);
+ 		DrawQ_String(x, y - size, addinfo, len, size, size, 0, 0, 0, 1, 0, NULL, true);
+ 	}
+ 
+@@ -506,7 +510,7 @@
+ 			dpsnprintf(temp, sizeof(temp), "Downloading %s ...  %5.1f%% @ %.1f KiB/s\n", downinfo[i].filename, 100.0 * downinfo[i].progress, downinfo[i].speed / 1024.0);
+ 		len = (int)strlen(temp);
+ 		x = (vid_conwidth.integer - len*size) / 2;
+-		DrawQ_Fill(0, y + i * size, vid_conwidth.integer, size, 0, 0, 0, 0.8, 0);
++		DrawQ_Fill(0, y + i * size, vid_conwidth.integer, size, 0, 0, 0, cls.signon == SIGNONS ? 0.5 : 1, 0);
+ 		DrawQ_String(x, y + i * size, temp, len, size, size, 1, 1, 1, 1, 0, NULL, true);
+ 	}
+ 
+@@ -525,8 +529,30 @@
+ 	int offset = 0;
+ 	offset += SCR_DrawQWDownload(offset);
+ 	offset += SCR_DrawCurlDownload(offset);
++	if(offset != scr_con_margin_bottom)
++		Con_DPrintf("broken console margin calculation: %d != %d\n", offset, scr_con_margin_bottom);
+ }
+ 
++static int SCR_DownloadHeight()
++{
++	int offset = 0;
++	Curl_downloadinfo_t *downinfo;
++	const char *addinfo;
++	int nDownloads;
++
++	if(cls.qw_downloadname[0])
++		offset += 0;
++
++	downinfo = Curl_GetDownloadInfo(&nDownloads, &addinfo);
++	if(downinfo)
++	{
++		offset += 8 * (nDownloads + (addinfo ? 1 : 0));
++		Z_Free(downinfo);
++	}
++
++	return offset;
++}
++
+ //=============================================================================
+ 
+ /*
+@@ -573,19 +599,16 @@
+ */
+ void SCR_DrawConsole (void)
+ {
++	scr_con_margin_bottom = SCR_DownloadHeight();
+ 	if (key_consoleactive & KEY_CONSOLEACTIVE_FORCED)
+ 	{
+ 		// full screen
+-		Con_DrawConsole (vid_conheight.integer);
++		Con_DrawConsole (vid_conheight.integer - scr_con_margin_bottom);
+ 	}
+ 	else if (scr_con_current)
+-		Con_DrawConsole ((int)scr_con_current);
++		Con_DrawConsole (min((int)scr_con_current, vid_conheight.integer - scr_con_margin_bottom));
+ 	else
+-	{
+ 		con_vislines = 0;
+-		if ((key_dest == key_game || key_dest == key_message) && !r_letterbox.value)
+-			Con_DrawNotify ();	// only draw notify in game
+-	}
+ }
+ 
+ /*
+@@ -1856,6 +1879,9 @@
+ 	}
+ 
+ 	// draw 2D stuff
++	if(!scr_con_current && !(key_consoleactive & KEY_CONSOLEACTIVE_FORCED))
++		if ((key_dest == key_game || key_dest == key_message) && !r_letterbox.value)
++			Con_DrawNotify ();	// only draw notify in game
+ 
+ 	if (cls.signon == SIGNONS)
+ 	{
+Index: lhnet.c
+===================================================================
+--- lhnet.c	(revision 7382)
++++ lhnet.c	(working copy)
+@@ -381,6 +381,130 @@
+ 	}
+ }
+ 
++static int LHNET_memmaskcmp(const void *buf1, const void *buf2, const void *mask, size_t len)
++{
++	const unsigned char *a = (const unsigned char *) buf1;
++	const unsigned char *b = (const unsigned char *) buf2;
++	const unsigned char *m = (const unsigned char *) mask;
++	for(; len; ++a, ++b, ++m, --len)
++		if((*a ^ *b) & *m)
++			return 1;
++	return 0;
++}
++
++int LHNETADDRESS_NetworkFromString(lhnetaddress_t *address, lhnetaddress_t *netmask, const char *string)
++{
++	char buf[128];
++	const char *slash = strchr(string, '/');
++	int i;
++	if(slash)
++	{
++		long bits;
++		char *end = NULL;
++
++		if((size_t)(slash - string) >= sizeof(buf))
++			return 0; // too long
++		memcpy(buf, string, slash - string);
++		buf[slash - string] = 0;
++		if(!LHNETADDRESS_FromString(address, buf, 0))
++			return 0;
++
++		bits = strtol(slash + 1, &end, 0);
++		if(!slash[1] || (end && *end)) // error in input
++		{
++			if(!LHNETADDRESS_FromString(netmask, slash + 1, 0))
++				return 0;
++			return 1;
++		}
++		else
++		{
++			memcpy(netmask, address, sizeof(*netmask));
++			// fill the first bits bits with ones, the rest with zeros
++			switch(address->addresstype)
++			{
++				case LHNETADDRESSTYPE_LOOP:
++					return 0; // does not make sense
++				case LHNETADDRESSTYPE_INET4:
++					if(bits > 32)
++						bits = 32;
++					for(i = 0; i < bits / 8; ++i)
++						netmask->addressdata.inet4.address[i] = 0xFF;
++					if(bits % 8)
++						netmask->addressdata.inet4.address[bits / 8] = 0xFF & (0xFF << (8 - bits % 8));
++					return 1;
++				case LHNETADDRESSTYPE_INET6:
++					if(bits > 128)
++						bits = 128;
++					for(i = 0; i < bits / 16; ++i)
++						netmask->addressdata.inet6.address[i] = 0xFFFF;
++					if(bits % 16)
++						netmask->addressdata.inet6.address[bits / 16] = 0xFFFF & (0xFFFF << (16 - bits % 16));
++					return 1;
++				default:
++					return 0;
++			}
++
++		}
++	}
++	else
++	{
++		// load the address
++		if(!LHNETADDRESS_FromString(address, string, 0))
++			return 0;
++		// fill netmask with the all-ones address
++		memcpy(netmask, address, sizeof(*netmask));
++		switch(address->addresstype)
++		{
++			case LHNETADDRESSTYPE_LOOP:
++				return 1;
++			case LHNETADDRESSTYPE_INET4:
++				memset(netmask->addressdata.inet4.address, 0xFF, sizeof(netmask->addressdata.inet4.address));
++				return 1;
++			case LHNETADDRESSTYPE_INET6:
++				memset(netmask->addressdata.inet6.address, 0xFF, sizeof(netmask->addressdata.inet6.address));
++				return 1;
++			default:
++				return 0;
++		}
++	}
++	return 0;
++}
++
++int LHNETADDRESS_InNetwork(const lhnetaddress_t *peer, const lhnetaddress_t *address, const lhnetaddress_t *netmask)
++{
++	if(!peer || !address)
++		return 0;
++	if(!netmask)
++		return LHNETADDRESS_Compare(peer, address) == 0;
++	if(peer->addresstype != address->addresstype)
++		return 0;
++	if(peer->addresstype != netmask->addresstype)
++		return 0;
++	switch(peer->addresstype)
++	{
++	case LHNETADDRESSTYPE_LOOP:
++		return 1; // loopback is always in the same "network"
++	case LHNETADDRESSTYPE_INET4:
++		if(peer->addressdata.inet4.family != address->addressdata.inet4.family)
++			return 0;
++		if(peer->addressdata.inet4.family != netmask->addressdata.inet4.family)
++			return 0;
++		if(LHNET_memmaskcmp(peer->addressdata.inet4.address, address->addressdata.inet4.address, netmask->addressdata.inet4.address, sizeof(peer->addressdata.inet4.address)))
++			return 0;
++		return 1;
++	case LHNETADDRESSTYPE_INET6:
++		if(peer->addressdata.inet6.family != address->addressdata.inet6.family)
++			return 0;
++		if(peer->addressdata.inet6.family != netmask->addressdata.inet6.family)
++			return 0;
++		if(LHNET_memmaskcmp(peer->addressdata.inet6.address, address->addressdata.inet6.address, netmask->addressdata.inet6.address, sizeof(peer->addressdata.inet6.address)))
++			return 0;
++		return 1;
++	default:
++		return 0;
++	}
++}
++
+ typedef struct lhnetpacket_s
+ {
+ 	void *data;
+Index: lhnet.h
+===================================================================
+--- lhnet.h	(revision 7382)
++++ lhnet.h	(working copy)
+@@ -64,6 +64,9 @@
+ int LHNETADDRESS_SetPort(lhnetaddress_t *address, int port);
+ int LHNETADDRESS_Compare(const lhnetaddress_t *address1, const lhnetaddress_t *address2);
+ 
++int LHNETADDRESS_NetworkFromString(lhnetaddress_t *address, lhnetaddress_t *netmask, const char *string);
++int LHNETADDRESS_InNetwork(const lhnetaddress_t *peer, const lhnetaddress_t *address, const lhnetaddress_t *netmask);
++
+ typedef struct lhnetsocket_s
+ {
+ 	lhnetaddress_t address;
+Index: quakedef.h
+===================================================================
+--- quakedef.h	(revision 7382)
++++ quakedef.h	(working copy)
+@@ -35,6 +35,7 @@
+ #include <stdarg.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <limits.h>
+ #include <setjmp.h>
+ 
+ #include "qtypes.h"
+Index: common.c
+===================================================================
+--- common.c	(revision 7382)
++++ common.c	(working copy)
+@@ -662,7 +662,213 @@
+ 
+ //============================================================================
+ 
++/*
++==============
++COM_Wordwrap
+ 
++Word wraps a string. The charWidth function is guaranteed to be called exactly
++once for each character in the string, so it may be stateful and e.g. implement
++kerning. At the beginning of the string, it will be called for the char 0 to
++initialize a clean state; the return value in this case however gets ignored.
++
++Wrapped lines get the isContinuation flag set and are continuationWidth less wide.
++
++The sum of the return values of the processLine function will be returned.
++==============
++*/
++int COM_Wordwrap(const char *string, size_t length, float continuationWidth, float maxWidth, COM_CharWidthFunc_t charWidth, void *passthroughCW, COM_LineProcessorFunc processLine, void *passthroughPL)
++{
++	qboolean isContinuation = false;
++	float currentWordSpace = 0;
++	const char *currentWord = 0;
++	float minReserve = 0;
++
++	float spaceUsedInLine = 0;
++	const char *currentLine = 0;
++	const char *currentLineEnd = 0;
++	float currentLineFinalWhitespace = 0;
++	const char *p;
++
++	int result = 0;
++	charWidth(passthroughCW, 0);
++	minReserve = charWidth(passthroughCW, 'm') + charWidth(passthroughCW, ' '); // FIXME assuming that is 'm' fits, anything does
++
++	if(maxWidth < continuationWidth + minReserve)
++		maxWidth = continuationWidth + minReserve;
++
++	charWidth(passthroughCW, 0);
++
++	for(p = string; p < string + length; ++p)
++	{
++		char c = *p;
++		float w = charWidth(passthroughCW, c);
++
++		if(!currentWord)
++		{
++			currentWord = p;
++			currentWordSpace = 0;
++		}
++
++		if(!currentLine)
++		{
++			currentLine = p;
++			spaceUsedInLine = isContinuation ? continuationWidth : 0;
++			currentLineEnd = 0;
++		}
++
++		if(c == ' ')
++		{
++			// 1. I can add the word AND a space - then just append it.
++			if(spaceUsedInLine + currentWordSpace + w <= maxWidth)
++			{
++				currentLineEnd = p; // note: space not included here
++				currentLineFinalWhitespace = w;
++				spaceUsedInLine += currentWordSpace + w;
++			}
++			// 2. I can just add the word - then append it, output current line and go to next one.
++			else if(spaceUsedInLine + currentWordSpace <= maxWidth)
++			{
++				result += processLine(passthroughPL, currentLine, p - currentLine, spaceUsedInLine + currentWordSpace, isContinuation);
++				currentLine = 0;
++				isContinuation = true;
++			}
++			// 3. Otherwise, output current line and go to next one, where I can add the word.
++			else if(continuationWidth + currentWordSpace + w <= maxWidth)
++			{
++				if(currentLineEnd)
++					result += processLine(passthroughPL, currentLine, currentLineEnd - currentLine, spaceUsedInLine - currentLineFinalWhitespace, isContinuation);
++				currentLine = currentWord;
++				spaceUsedInLine = continuationWidth + currentWordSpace + w;
++				currentLineEnd = p;
++				currentLineFinalWhitespace = w;
++				isContinuation = true;
++			}
++			// 4. We can't even do that? Then output both current and next word as new lines.
++			else
++			{
++				if(currentLineEnd)
++				{
++					result += processLine(passthroughPL, currentLine, currentLineEnd - currentLine, spaceUsedInLine - currentLineFinalWhitespace, isContinuation);
++					isContinuation = true;
++				}
++				result += processLine(passthroughPL, currentWord, p - currentWord, currentWordSpace, isContinuation);
++				currentLine = 0;
++				isContinuation = true;
++			}
++			currentWord = 0;
++		}
++		else if(c == '\n')
++		{
++			// 1. I can add the word - then do it.
++			if(spaceUsedInLine + currentWordSpace <= maxWidth)
++			{
++				result += processLine(passthroughPL, currentLine, p - currentLine, spaceUsedInLine + currentWordSpace, isContinuation);
++			}
++			// 2. Otherwise, output current line, next one and make tabula rasa.
++			else
++			{
++				if(currentLineEnd)
++				{
++					processLine(passthroughPL, currentLine, currentLineEnd - currentLine, spaceUsedInLine - currentLineFinalWhitespace, isContinuation);
++					isContinuation = true;
++				}
++				result += processLine(passthroughPL, currentWord, p - currentWord, currentWordSpace, isContinuation);
++			}
++			currentWord = 0;
++			currentLine = 0;
++			isContinuation = false;
++		}
++		else
++		{
++			currentWordSpace += w;
++			if(
++				spaceUsedInLine + currentWordSpace > maxWidth // can't join this line...
++				&&
++				continuationWidth + currentWordSpace > maxWidth // can't join any other line...
++			)
++			{
++				// this word cannot join ANY line...
++				// so output the current line...
++				if(currentLineEnd)
++				{
++					result += processLine(passthroughPL, currentLine, currentLineEnd - currentLine, spaceUsedInLine - currentLineFinalWhitespace, isContinuation);
++					isContinuation = true;
++				}
++
++				// then this word's beginning...
++				if(isContinuation)
++				{
++					// it may not fit, but we know we have to split it into maxWidth - continuationWidth pieces
++					float pieceWidth = maxWidth - continuationWidth;
++					const char *pos = currentWord;
++					currentWordSpace = 0;
++
++					// reset the char width function to a state where no kerning occurs (start of word)
++					charWidth(passthroughCW, ' ');
++					while(pos <= p)
++					{
++						float w = charWidth(passthroughCW, *pos);
++						if(currentWordSpace + w > pieceWidth) // this piece won't fit any more
++						{
++							// print everything until it
++							result += processLine(passthroughPL, currentWord, pos - currentWord, currentWordSpace, true);
++							// go to here
++							currentWord = pos;
++							currentWordSpace = 0;
++						}
++						currentWordSpace += w;
++						++pos;
++					}
++					// now we have a currentWord that fits... set up its next line
++					// currentWordSpace has been set
++					// currentWord has been set
++					spaceUsedInLine = continuationWidth;
++					currentLine = currentWord;
++					currentLineEnd = 0;
++					isContinuation = true;
++				}
++				else
++				{
++					// we have a guarantee that it will fix (see if clause)
++					result += processLine(passthroughPL, currentWord, p - currentWord, currentWordSpace - w, isContinuation);
++
++					// and use the rest of this word as new start of a line
++					currentWordSpace = w;
++					currentWord = p;
++					spaceUsedInLine = continuationWidth;
++					currentLine = p;
++					currentLineEnd = 0;
++					isContinuation = true;
++				}
++			}
++		}
++	}
++
++	if(!currentWord)
++	{
++		currentWord = p;
++		currentWordSpace = 0;
++	}
++
++	if(currentLine) // Same procedure as \n
++	{
++		// Can I append the current word?
++		if(spaceUsedInLine + currentWordSpace <= maxWidth)
++			result += processLine(passthroughPL, currentLine, p - currentLine, spaceUsedInLine + currentWordSpace, isContinuation);
++		else
++		{
++			if(currentLineEnd)
++			{
++				result += processLine(passthroughPL, currentLine, currentLineEnd - currentLine, spaceUsedInLine - currentLineFinalWhitespace, isContinuation);
++				isContinuation = true;
++			}
++			result += processLine(passthroughPL, currentWord, p - currentWord, currentWordSpace, isContinuation);
++		}
++	}
++
++	return result;
++}
++
+ /*
+ ==============
+ COM_ParseToken_Simple
+Index: common.h
+===================================================================
+--- common.h	(revision 7382)
++++ common.h	(working copy)
+@@ -200,6 +200,10 @@
+ 
+ //============================================================================
+ 
++typedef float (*COM_CharWidthFunc_t) (void *passthrough, char c);
++typedef int (*COM_LineProcessorFunc) (void *passthrough, const char *line, size_t length, float width, qboolean isContination);
++int COM_Wordwrap(const char *string, size_t length, float continuationSize, float maxWidth, COM_CharWidthFunc_t charWidth, void *passthroughCW, COM_LineProcessorFunc processLine, void *passthroughPL);
++
+ extern char com_token[MAX_INPUTLINE];
+ 
+ int COM_ParseToken_Simple(const char **datapointer, int returnnewline);
+Index: keys.c
+===================================================================
+--- keys.c	(revision 7382)
++++ keys.c	(working copy)
+@@ -449,23 +449,19 @@
+ 	if (key == K_PGUP || key == K_KP_PGUP || key == K_MWHEELUP)
+ 	{
+ 		con_backscroll += ((int) vid_conheight.integer >> 5);
+-		if (con_backscroll > con_totallines - (vid_conheight.integer>>3) - 1)
+-			con_backscroll = con_totallines - (vid_conheight.integer>>3) - 1;
+ 		return;
+ 	}
+ 
+ 	if (key == K_PGDN || key == K_KP_PGDN || key == K_MWHEELDOWN)
+ 	{
+ 		con_backscroll -= ((int) vid_conheight.integer >> 5);
+-		if (con_backscroll < 0)
+-			con_backscroll = 0;
+ 		return;
+ 	}
+ 
+ 	if (key == K_HOME || key == K_KP_HOME)
+ 	{
+ 		if (keydown[K_CTRL])
+-			con_backscroll = con_totallines - (vid_conheight.integer>>3) - 1;
++			con_backscroll = INT_MAX;
+ 		else
+ 			key_linepos = 1;
+ 		return;
+Index: cl_input.c
+===================================================================
+--- cl_input.c	(revision 7382)
++++ cl_input.c	(working copy)
+@@ -937,7 +937,7 @@
+ 	// released at least once since the last jump
+ 	if (s->q.jump)
+ 	{
+-		if (s->onground && s->q.canjump)
++		if (s->onground) // && s->q.canjump) // FIXME canjump logic STILL borked
+ 		{
+ 			s->velocity[2] += cl.movevars_jumpvelocity;
+ 			s->onground = false;
+Index: sbar.c
+===================================================================
+--- sbar.c	(revision 7382)
++++ sbar.c	(working copy)
+@@ -1501,7 +1501,7 @@
+ 
+ void Sbar_DeathmatchOverlay (void)
+ {
+-	int i, x, y;
++	int i, y, xmin, xmax, ymin, ymax;
+ 
+ 	// request new ping times every two second
+ 	if (cl.last_ping_request < realtime - 2 && cls.netcon)
+@@ -1538,21 +1538,32 @@
+ 		}
+ 	}
+ 
++	// scores
++	Sbar_SortFrags ();
++
++	ymin = 8;
++	ymax = 40 + 8 + (Sbar_IsTeammatch() ? (teamlines * 8 + 5): 0) + scoreboardlines * 8 - 1;
++
++	if (cls.protocol == PROTOCOL_QUAKEWORLD)
++		xmin = (vid_conwidth.integer - (26 + 15) * 8) / 2; // 26 characters until name, then we assume 15 character names (they can be longer but usually aren't)
++	else
++		xmin = (vid_conwidth.integer - (16 + 15) * 8) / 2; // 16 characters until name, then we assume 15 character names (they can be longer but usually aren't)
++	xmax = vid_conwidth.integer - xmin;
++
++	if(gamemode == GAME_NEXUIZ)
++		DrawQ_Pic (xmin - 8, ymin - 8, 0, xmax-xmin+1 + 2*8, ymax-ymin+1 + 2*8, 0, 0, 0, sbar_alpha_bg.value, 0);
++
+ 	DrawQ_Pic ((vid_conwidth.integer - sb_ranking->width)/2, 8, sb_ranking, 0, 0, 1, 1, 1, 1 * sbar_alpha_fg.value, 0);
+ 
+-	// scores
+-	Sbar_SortFrags ();
+ 	// draw the text
+ 	y = 40;
+ 	if (cls.protocol == PROTOCOL_QUAKEWORLD)
+ 	{
+-		x = (vid_conwidth.integer - (26 + 15) * 8) / 2; // 26 characters until name, then we assume 15 character names (they can be longer but usually aren't)
+-		DrawQ_String(x, y, va("ping pl%% time frags team  name"), 0, 8, 8, 1, 1, 1, 1 * sbar_alpha_fg.value, 0, NULL, false );
++		DrawQ_String(xmin, y, va("ping pl%% time frags team  name"), 0, 8, 8, 1, 1, 1, 1 * sbar_alpha_fg.value, 0, NULL, false );
+ 	}
+ 	else
+ 	{
+-		x = (vid_conwidth.integer - (16 + 15) * 8) / 2; // 16 characters until name, then we assume 15 character names (they can be longer but usually aren't)
+-		DrawQ_String(x, y, va("ping pl%% frags  name"), 0, 8, 8, 1, 1, 1, 1 * sbar_alpha_fg.value, 0, NULL, false );
++		DrawQ_String(xmin, y, va("ping pl%% frags  name"), 0, 8, 8, 1, 1, 1, 1 * sbar_alpha_fg.value, 0, NULL, false );
+ 	}
+ 	y += 8;
+ 
+@@ -1560,12 +1571,12 @@
+ 	{
+ 		// show team scores first
+ 		for (i = 0;i < teamlines && y < vid_conheight.integer;i++)
+-			y += (int)Sbar_PrintScoreboardItem((teams + teamsort[i]), x, y);
++			y += (int)Sbar_PrintScoreboardItem((teams + teamsort[i]), xmin, y);
+ 		y += 5;
+ 	}
+ 
+ 	for (i = 0;i < scoreboardlines && y < vid_conheight.integer;i++)
+-		y += (int)Sbar_PrintScoreboardItem(cl.scores + fragsort[i], x, y);
++		y += (int)Sbar_PrintScoreboardItem(cl.scores + fragsort[i], xmin, y);
+ }
+ 
+ /*
+Index: libcurl.c
+===================================================================
+--- libcurl.c	(revision 7382)
++++ libcurl.c	(working copy)
+@@ -1298,6 +1298,7 @@
+ void Curl_SendRequirements()
+ {
+ 	// for each requirement, find the pack name
++	char datapatch[22]; // datapatchXXXXXXXX.pk3
+ 	char sendbuffer[4096] = "";
+ 	requirement *req;
+ 	qboolean foundone = false;
+@@ -1315,6 +1316,26 @@
+ 		if(p)
+ 			thispack = p + 1;
+ 
++		if(gamemode == GAME_NEXUIZ)
++		{
++			int y1, y2, y3, y4, m1, m2, d1, d2;
++			char eoftest, threetest;
++			if(9 == sscanf(thispack, "data%1d%1d%1d%1d%1d%1d%1d%1d.pk%c%c", &y1, &y2, &y3, &y4, &m1, &m2, &d1, &d2, &threetest, &eoftest))
++				// 9: the %c field did NOT MATCH! Note that %c always matches except the string is over...
++				if(threetest == '3') // but the pk did match
++				{
++					int y = y1 * 1000 + y2 * 100 + y3 * 10 + y4;
++					int m = m1 * 10 + m2;
++					int d = d1 * 10 + d2;
++					if(y >= 2007 && m >= 1 && m <= 12 && d >= 1 && d <= 31)
++					{
++						// replace data by datapatch
++						dpsnprintf(datapatch, sizeof(datapatch), "datapatch%04d%02d%02d.pk3", y, m, d);
++						thispack = datapatch;
++					}
++				}
++		}
++
+ 		packurl = Curl_FindPackURL(thispack);
+ 
+ 		if(packurl && *packurl && strcmp(packurl, "-"))
+Index: netconn.c
+===================================================================
+--- netconn.c	(revision 7382)
++++ netconn.c	(working copy)
+@@ -69,6 +69,7 @@
+ sizebuf_t net_message;
+ static unsigned char net_message_buf[NET_MAXMESSAGE];
+ 
++cvar_t net_banlist = {CVAR_SAVE, "net_banlist","", "space separated list of networks/IPs to be banned in a.b.c.d/nn or a.b.c.d/e.f.g.h notation"};
+ cvar_t net_messagetimeout = {0, "net_messagetimeout","300", "drops players who have not sent any packets for this many seconds"};
+ cvar_t net_connecttimeout = {0, "net_connecttimeout","10", "after requesting a connection, the client must reply within this many seconds or be dropped (cuts down on connect floods)"};
+ cvar_t net_connectfloodblockingtimeout = {0, "net_connectfloodblockingtimeout", "5", "when a connection packet is received, it will block all future connect packets from that IP address for this many seconds (cuts down on connect floods)"};
+@@ -1190,6 +1191,66 @@
+ 	return false;
+ }
+ 
++static int NetConn_IsBanned(lhnetaddress_t *peeraddress)
++{
++	const char *banlist = net_banlist.string;
++	const char *p;
++	char buf[128];
++	size_t len;
++	lhnetaddress_t address, netmask;
++
++	if(!*banlist)
++		return false; // no ban list -> no parsing
++
++	if(peeraddress->addresstype == LHNETADDRESSTYPE_LOOP)
++		return false; // can't ban local
++
++	if(peeraddress->addresstype == LHNETADDRESSTYPE_NONE)
++		return false; // WTF?
++
++	while(*banlist)
++	{
++		while(*banlist == ' ')
++			++banlist;
++		if(!*banlist)
++			break;
++		p = strchr(banlist, ' ');
++		if(!p)
++			p = banlist + strlen(banlist);
++
++		len = p - banlist;
++		if(len < sizeof(buf))
++		{
++			memcpy(buf, banlist, len);
++			buf[len] = 0;
++
++			if(LHNETADDRESS_NetworkFromString(&address, &netmask, buf))
++			{
++				if(developer.integer >= 100)
++				{
++					char addressstring[128];
++					LHNETADDRESS_ToString(&address, addressstring, sizeof(addressstring), false);
++					Con_DPrintf("Banlist check: address %s/", addressstring);
++					LHNETADDRESS_ToString(&netmask, addressstring, sizeof(addressstring), false);
++					Con_DPrintf("%s against ", addressstring);
++					LHNETADDRESS_ToString(peeraddress, addressstring, sizeof(addressstring), false);
++					Con_DPrintf("%s\n", addressstring);
++				}
++				if(LHNETADDRESS_InNetwork(peeraddress, &address, &netmask))
++					return true;
++			}
++			else
++				Con_DPrintf("invalid address in net_banlist: %s\n", buf);
++		}
++		else
++			Con_DPrintf("invalid address in net_banlist: (too long)\n");
++
++		banlist = p;
++	}
++
++	return false;
++}
++
+ static int NetConn_ClientParsePacket_ServerList_ProcessReply(const char *addressstring)
+ {
+ 	int n;
+@@ -1311,6 +1372,9 @@
+ 			serverlist_info_t *info;
+ 			int n;
+ 
++			if(NetConn_IsBanned(peeraddress))
++				return true; // just ignore
++
+ 			string += 13;
+ 			// search the cache for this server and update it
+ 			n = NetConn_ClientParsePacket_ServerList_ProcessReply(addressstring2);
+@@ -1977,6 +2041,13 @@
+ 			if (i == MAX_CHALLENGES)
+ 				return true;
+ 
++			if(NetConn_IsBanned(peeraddress))
++			{
++				Con_Printf("Rejecting connection from banned client %s.\n", addressstring2);
++				NetConn_WriteString(mysocket, "\377\377\377\377reject You are not welcome on this server.", peeraddress);
++				return true;
++			}
++
+ 			// check engine protocol
+ 			if (strcmp(SearchInfostring(string, "protocol"), "darkplaces 3"))
+ 			{
+@@ -2571,6 +2642,25 @@
+ 		ServerList_QueryList(false, true);
+ }
+ 
++void Net_Banlist_Test_f(void)
++{
++	int i;
++	for(i = 1; i < Cmd_Argc(); ++i)
++	{
++		lhnetaddress_t addr;
++		const char *addrstr = Cmd_Argv(i);
++		if(LHNETADDRESS_FromString(&addr, addrstr, 0))
++		{
++			if(NetConn_IsBanned(&addr))
++				Con_Printf("%s is banned\n", addrstr);
++			else
++				Con_Printf("%s is free to join\n", addrstr);
++		}
++		else
++			Con_Printf("Invalid address %s\n", addrstr);
++	}
++}
++
+ void NetConn_Init(void)
+ {
+ 	int i;
+@@ -2580,6 +2670,8 @@
+ 	Cmd_AddCommand("net_slist", Net_Slist_f, "query dp master servers and print all server information");
+ 	Cmd_AddCommand("net_slistqw", Net_SlistQW_f, "query qw master servers and print all server information");
+ 	Cmd_AddCommand("heartbeat", Net_Heartbeat_f, "send a heartbeat to the master server (updates your server information)");
++	Cmd_AddCommand("net_banlist_test", Net_Banlist_Test_f, "tests if a given IP is banned");
++	Cvar_RegisterVariable(&net_banlist);
+ 	Cvar_RegisterVariable(&net_slist_queriespersecond);
+ 	Cvar_RegisterVariable(&net_slist_queriesperframe);
+ 	Cvar_RegisterVariable(&net_slist_timeout);
