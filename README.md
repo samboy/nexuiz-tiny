@@ -62,5 +62,5 @@ Since Aerowalk is one of my favorite maps, I have included a copy of this
 map in the nexuiz-tiny.zip file.  While this map is not open source (i.e.
 one can not distribute this on any for-sale media, and can only distribute
 this over the Internet and “BBS systems”), the map can be downloaded 
-and used free of charge.
+and used free of charge. 
 
