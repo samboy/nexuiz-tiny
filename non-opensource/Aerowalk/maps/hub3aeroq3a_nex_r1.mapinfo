@@ -1,0 +1,8 @@
+title Aerowalk
+description <DESCRIPTION>
+author Preacher (Hubsters Remix II)
+has weapons
+type dm 30 20
+type lms 9 20
+type arena 10 20
+settemp_for_type all sv_q3acompat_machineshotgunswap 1

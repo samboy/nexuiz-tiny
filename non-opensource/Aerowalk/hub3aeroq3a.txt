@@ -1,0 +1,69 @@
+TITLE                   : Aerowalk [Hubster's Remix II]
+FILENAME                : hub3aeroq3a.zip
+AUTHOR                  : The Preacher (this conversion by the Hubster)
+DATE                    : December 2003
+TYPE                    : CPMA Tourney Only
+EMAIL ADDRESS           : hburji@hotmail.com
+WEBSITE URL	            : http://hubster.challenge-au.com/
+ZIPFILE CONTENTS		: hub3aeroq3a.pk3, hub3aeroq3a.txt
+
+--------------------------------------------------------------------------------
+* LEVEL DESCRIPTION *
+--------------------------------------------------------------------------------
+OFFICIAL VERSION
+
+Aerowalk was originally made by The Preacher for Quake. Full
+credits for design and ownership go to Preacher. This is his level.
+
+This version of my remix has been redone due to high public demand.
+It is suitable for CPMA only. This map should not be played in base
+Quake III Arena, as several items will be missing.
+
+--------------------------------------------------------------------------------
+* VERY IMPORTANT NOTES *
+--------------------------------------------------------------------------------
+This map is OFFICIAL and has been endorsed by the original author.
+--------------------------------------------------------------------------------
+DEATHMATCH              : 6 Player Respawn Points
+SUGGESTED PLAYER LOAD   : 2
+DIFFICULTY SETTINGS     :  -
+NEW TEXTURES            : Yes
+NEW SOUNDS              : No
+
+--------------------------------------------------------------------------------
+* CONSTRUCTION *
+--------------------------------------------------------------------------------
+MAP BASE                : Conversion of the original Aerowalk.
+						: Rebuilt from scratch.
+PREFABS USED            : None
+EDITOR(S) USED          : GTK Radiant 1.2.13
+OTHER UTILITIES USED    : Photoshop, Editpad, Qase, Q3MAP2 2.5.10
+KNOWN BUGS              : None
+COMPILE MACHINE         : Athlon XP 1800, 768MB RAM, GeForce DDR
+Compile Settings		: BSP -meta
+						: VIS
+						: LIGHT -fast -bounce 8 -samples 2 -filter
+						: BSPC -forcesidesvisible -bsp2aas
+
+--------------------------------------------------------------------------------
+* CREDITS *
+--------------------------------------------------------------------------------
+PREACHER: for building a map like this. A work of genius which has stood the
+test of time
+SOCK: for the skybox.
+LUNARAN: for the MKOXIDE textureset
+KILLER: MKOXIDE shader
+YDNAR: for Q3MAP2.
+DECKER & JUDE: for the teleporter texture and shader.
+HOONY: for making this official release possible. Big thanks!
+SWELT: for moral support, playtesting
+wVIPERw: playtesting, mapping guidance & moral support.
+--------------------------------------------------------------------------------
+* COPYRIGHT / PERMISSIONS *
+--------------------------------------------------------------------------------
+This LEVEL may be distributed ONLY over the Internet and/or BBS systems.
+You are NOT authorized to put this LEVEL on any CD or distribute it in
+any way without written permission from the Preacher.
+
+Quake III Arena (C) 1999 id Software. All rights reserved.
+The Preacher (C). All rights reserved.

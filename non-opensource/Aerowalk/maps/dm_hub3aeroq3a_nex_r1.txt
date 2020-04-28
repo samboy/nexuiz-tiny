@@ -1,0 +1,7 @@
+Aerowalk (dm_hub3aeroq3a_nex_r1)
+maps/hub3aeroq3a_nex_r1
+
+Small map with brutal fast
+vertical action.
+
+Players: 2-4

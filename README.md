@@ -56,3 +56,11 @@ Windows version of Nexuiz.
 The version of this project pre-built to run on Windows can be downloaded
 [from Sourceforge](https://sourceforge.net/projects/nexuiz-tiny/files/2020-04-20/).
 
+# Note on the non-opensource Aerowalk map
+
+Since Aerowalk is one of my favorite maps, I have included a copy of this
+map in the nexuiz-tiny.zip file.  While this map is not open source (i.e.
+one can not distribute this on any for-sale media, and can only distribute
+this over the Internet and “BBS systems”), the map can be downloaded 
+and used free of charge.
+
