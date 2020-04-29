@@ -1,0 +1,91 @@
+- File Information --------------------------------------------------------  
+              
+               Title : The Wisdom Machine
+            Filename : quintdm3.pk3
+              Author : Quint (Marco Quintavalle)
+       Email Address : **Email**
+            Web Site : http://www.extralife.it
+        Installation : Unzip and place quintdm3.pk3                                            
+     in your Quake3 -> baseq3 
+                       Then The map should now 
+                       be accessible in the Multiplayer menu or by                             
+    typing at in the console:
+                      
+                       \sv_pure 0
+                       \map quintdm3
+
+
+- Play Information -----------------------------------------------------------------------
+Description : This is the third map of a trilogy composed by other
+              two maps called "The Birth Machine" and
+"The Guns OF Navarone". What do have these maps
+in common? Not only the outhor, obviously, bat there is a theme
+that link them each other:
+They are all floaters, the first one is in the atmosphere (air),
+the second one is above the sea (water), and this one on a desert (earth). Olso, The first one
+experiments a vertical way 
+to use physics, the second one do that in an horizontal way,
+this one in both the way...
+and this is the reason why I've choosen the name "wisdom".
+The second part of the name "Machine" has been choosen to close
+the circle started with "The Birth Machine" 
+
+         Player Base : Free-For-All
+   Number of Players : 3-8
+    Best Player Load : 4-5
+        New textures : yes, the complete level is with
+                       custom textures made by Lord Manson and me.
+         New shaders : Yes, made by Lord Manson and me.
+         New skybox  : Yes, made by Sock.
+         New music   : Yes, made by Brad.
+ 
+- Construction ---------------------------------------------------------------------------
+                Base : New level from scratch
+   Construction Time : 30 days
+       Programs used : Q3Radiant202, Q3build, Adobe Illustrator
+                       Adobe Photoshop, Painter, Q3Ase.
+         Compile time: 2.15 hours
+
+- Credits ---------------------------------------------------------------------------
+          Lord Mason : wonderfull texture artist
+                Brad : very talented sound designer
+                       available for making music for your maps,
+                       contact him at:
+                       **Email**
+                Sock : for his lovely skybox.
+
+Here are all the kind people that gave me a feedback:
+
+Mikey
+Buttmunch
+Jax_Gator
+Blood
+OzZ *OCI
+SevenUp
+Cardigan
+krekits
+blaise
+Whiskey
+7
+Arshish
+Pol
+Benjamin Egloff
+K.Ninja
+Messalina
+One shot kill
+Ninja Kiler
+Nilla
+
+Sorry for all the guys I could forgot in this list.
+Thanks also to all people that gave me comments in the forums!
+Please, mail me if you decide to review it, or put it in a server.
+
+- Copyright / Permissions ----------------------------------------------------------------
+   Authors May Not decompile the BSP as a base to build additional levels
+without previous Quint's permission.
+Authors may use the included custom textures & shaders 
+provided they give note of such in an attached readme.
+
+   You MAY distribute this pak file and/or its contents by any electronic means, provided you
+leave the contents unaltered and include this text file, also unaltered.  This file may not be
+commercially exploited in any way.
