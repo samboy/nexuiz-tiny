@@ -6,7 +6,8 @@ this allows the data to be freely redistributed.
 Some of the data (read: *not* code) is GPLv3 licensed; it is my 
 understanding that a GPLv2+ licensed program can load GPLv3 licensed 
 data.  This data is in the folder `GPLv3-data/` and generates a
-separate `GPLv3-data.pak3` file.
+separate `GPLv3-data.pak3` file.  The source for the GPLv3-licensed
+data is in the folder `source/GPLv3`.
 
 Some of the other data is distributed under terms which are different
 from the GPL (free distribution over the Internet is allowed, but 
