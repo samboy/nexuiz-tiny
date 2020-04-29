@@ -29,6 +29,7 @@ savdm6ish
 sav-graysky1
 sav-liquids
 sfx
+skies_heaven
 stralenex1
 stralenex8
 swamp
