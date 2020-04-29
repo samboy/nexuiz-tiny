@@ -1,0 +1,11 @@
+Graphite (dm_graphite_b2)
+maps/graphite_b2
+
+Small map with fast
+two level action.
+
+Players: 2-4
+
+Gametype: Deathmatch
+
+By: t0uYK8Ne
