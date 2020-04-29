@@ -18,7 +18,7 @@ The advantage of this remix is that it has all of Nexuiz’s graphics
 intact.  This particular remix of Nexuiz is based on Nexuiz 2.3, which
 has better performance on slower hardware than newer versions of Nexuiz,
 with the number of maps and models reduced to a minimum.  While this
-version of Nexuiz only has five smaller maps, all of the textures used
+version of Nexuiz only has seven smaller maps, all of the textures used
 in the maps available are still present.
 
 While the Intel Atom N455-based Netbook I originally made this fork of
