@@ -3,5 +3,5 @@
 "dm","toxic","3","2","5",,"DM on Toxic","Toxic slime, fraglimit 5"
 "dm","soylent","3","2","5",,"Soylent","Deathmatch in a space map against 3 bots.\n\nFraglimit of 5.\n\nPush your opponents off the map and try not to fall off yourself."
 "dm","bloodprison","3","2","5",,"Blood Prison","Last Man Standing in Blood Prison, you have five lives.\n\nWill you survive?"
-"dm","aggressor","3","2","5",,"Aggressor","Aggressor, 3 bots, fraglimit of 5."
+"dm","downer","3","2","5",,"Downer","Downer, 3 bots, fraglimit of 5."
 "dm","final_rage","3","2","5",,"Final RAGE!","The final battle on final rage - Now its 3 bots with a 5 frag limit .\n\nAre you up to the challenge?"
