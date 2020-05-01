@@ -83,19 +83,19 @@
 "origin" "-296.000000 0.000000 208.000000"
 }
 {
-"classname" "item_health_medium"
+"classname" "item_health25"
 "origin" "672.000000 128.000000 -112.000000"
 }
 {
-"classname" "item_health_medium"
+"classname" "item_health25"
 "origin" "736.000000 -432.000000 144.000000"
 }
 {
-"classname" "item_health_medium"
+"classname" "item_health25"
 "origin" "192.000000 -1456.000000 80.000000"
 }
 {
-"classname" "item_health_medium"
+"classname" "item_health25"
 "origin" "-528.000000 -640.000000 -112.000000"
 }
 {
