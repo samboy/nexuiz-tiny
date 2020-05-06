@@ -239,11 +239,11 @@
 }
 {
 "origin" "-273.600006 345.600006 374.400024"
-"classname" "weapon_lightning"
+"classname" "weapon_crylink"
 }
 {
 "origin" "931.200012 -624.000000 441.600006"
-"classname" "ammo_rockets"
+"classname" "item_rockets"
 }
 {
 "origin" "1113.600098 -460.800018 163.200012"
@@ -311,7 +311,7 @@
 }
 {
 "origin" "76.800003 -422.400024 -67.200005"
-"classname" "ammo_rockets"
+"classname" "item_rockets"
 }
 {
 "origin" "153.600006 0.000000 -67.200005"
@@ -319,19 +319,19 @@
 }
 {
 "origin" "480.000031 -153.600006 163.200012"
-"classname" "ammo_bullets"
+"classname" "item_bullets"
 }
 {
 "origin" "523.200012 -153.600006 441.600006"
-"classname" "ammo_lightning"
+"classname" "item_cells"
 }
 {
 "origin" "590.400024 -153.600006 441.600006"
-"classname" "ammo_bullets"
+"classname" "item_bullets"
 }
 {
 "origin" "-163.200012 355.200012 163.200012"
-"classname" "ammo_lightning"
+"classname" "item_cells"
 }
 {
 "model" "*6"
@@ -347,11 +347,11 @@
 "origin" "153.600006 -556.800049 76.800003"
 }
 {
-"classname" "ammo_bullets"
+"classname" "item_bullets"
 "origin" "801.600037 -614.400024 76.800003"
 }
 {
-"classname" "ammo_shells"
+"classname" "item_shells"
 "origin" "734.400024 -614.400024 76.800003"
 }
 {
