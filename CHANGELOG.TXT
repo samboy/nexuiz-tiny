@@ -1,0 +1,56 @@
+2020-05-06 changes
+
+* Aerowalk map: Fix issue with missing ammo; rename aerowalk_nextiny
+* Graphite map: Fix issue with missing medium healths
+
+2020-04-30-AeroFix changes
+
+* Aerowalk map: Fix issue with lights missing a texture
+
+2020-04-30 changes
+
+* Add support for 1024x600, 1280x720, and 1366x768 resolutions
+* Add shell script which generates Nexuiz packages for graphite_b2
+* Skybox fixes to make it easier to package Graphite map
+* Add Makefile.nocompress to make uncompressed .pk3 files (which compress
+  better in 7-zip)
+* Aerowalk map: Use space music used for the Soylent map
+* Correctly attribute track001.ogg soundtrack (intro, Final Rage)
+* Downer map: Use Nexuiz 1.1 version of map (Reduces Intel 620 buggy driver
+  flicker issue)
+* Downer map: Change skybox name in downer.bsp file (1-character change)
+* Downer map: Update music
+
+2020-04-29 changes
+
+* Soylent map: Fix lights 
+* Convert Graphite map from Xonotic in to Nexuiz format and add it
+  to nexuiz-tiny
+* Replace Aggressor map with Downer map.  I never liked the Aggressor map,
+  feeling it was too claustrophobic.  I only added it to the 2010 Netbook 
+  remix of Nexuiz because it was small and had official 2-player support.  
+  Downer, while officially needing three or more players, is perfectly 
+  playable as a 2-player deathmatch map, and has always been part of 
+  Nexuiz.
+
+2020-04-28 changes
+
+* Add Aerowalk map to nexuiz-tiny.  While this is not an open source map,
+  it is a classic map which I played countless times with a buddy of mine
+  back in the day.  This is a well-liked map, which has been remade a
+  number of times.
+* Add tool to help track which textures a given map uses
+
+2020-04-20 changes
+
+* Convert nexuiz-tiny in to a GitHub repo
+* Add Soylent map to the list of available maps
+* Make the campaign playable
+
+2011 release
+
+* Nexuiz tiny netbook: Make a Netbook compatible version of Nexuiz.
+  Remove all but one or two models; have only four maps: Aggressor,
+  Blood Prison, Final Rage, and Toxic.  Use Nexuiz 2.3 which has
+  better Netbook performance.
+
