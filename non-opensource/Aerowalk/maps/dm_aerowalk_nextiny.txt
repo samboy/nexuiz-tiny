@@ -1,7 +1,12 @@
-Aerowalk (dm_hub3aeroq3a_nex_r1)
-maps/hub3aeroq3a_nex_r1
+Aerowalk (aerowalk_nextiny)
+maps/aerowalk_nextiny
 
-Small map with brutal fast
-vertical action.
+Classic small map with 
+brutal fast vertical 
+action.
 
 Players: 2-4
+
+By: The Preacher
+    Q3 conversion by
+    The Hubster
