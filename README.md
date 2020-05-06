@@ -54,7 +54,7 @@ Windows version of Nexuiz.
 # Downloading the Windows binary
 
 The version of this project pre-built to run on Windows can be downloaded
-[from Sourceforge](https://sourceforge.net/projects/nexuiz-tiny/files/2020-04-30-AeroFix/).
+[from Sourceforge](https://sourceforge.net/projects/nexuiz-tiny/files/2020-05-06/).
 
 # Note on the non-opensource Aerowalk map
 
