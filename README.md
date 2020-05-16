@@ -80,19 +80,19 @@ which can be played for 1-on-1 games:
   map.  Open source.
 
 * **Downer**  This is a small-to-medium sized three level map.  In the
-  lowest level, we have a cave with a mega health and the machine gun.
+  lowest level, we have a cave with a mega armor and the machine gun.
   A teleport leads out, as do stairs.  Next to the basement is an area
-  with a mega health and a jump pad to the upper floor.  Stairs leads up 
+  with another mega armor and a jump pad to the upper floor.  Stairs leads up 
   to the middle floor, which includes a wing with both another mega armor
   and a mega health, two medium healths and a mortar in the middle of the 
   level, and both a teleport and jump pad to take one to the upper floor.
   The upper floor has a rocket launcher and a lovely view of the sky.
   While originally designed for 3-4 players, it’s perfectly playable as
   a 1-on-1 duel map.  There has been a remake of this map for Xonotic, with
-  significant changes from this original Nexuiz map, but this version of
-  the map is probably the best version.  Not widely played in Xonotic,
-  but an excellent Nexuiz map.  Open source, and it has been included with
-  Nexuiz since version 1.
+  significant changes from this original Nexuiz map, but this original
+  version of the map is probably the best version.  Not widely played in 
+  Xonotic, but an excellent Nexuiz map.  Open source, and it has been 
+  included with Nexuiz since version 1.
 
 * **Final Rage**  This is the old Nexuiz 2 version of a map which remains
   a popular Xonotic duel map.  This maps is large enough to be played with
@@ -102,10 +102,10 @@ which can be played for 1-on-1 games:
   two-level room with the machine gun and mega armor.  Next to the large 
   atrium is a smaller area with a mega health; teleports take one to and 
   from the mega health area and the mega armor room.  There is also, next 
-  to the mega armor room, an area with the crylink available.  The Xonotic
-  update has a new texture scheme, and used a warp zone (instead of 
-  teleports) to go between the mega health and mega armor.  Included with
-  later releases of Nexuiz 2 as well as with Xonotic.  Open source.
+  to the mega armor room, an area with the crylink available.  The map
+  remains popular as a Xonotic map, albeit one with a lot of changes
+  from this original Nexuiz version of the map.  Open source, available
+  as one of the included maps for both Nexuiz 2.3+ and Xonotic.
 
 * **Graphite** This is an Xonotic, not Nexuiz map, but I liked this map
   enough to spend a couple days to make a proper Nexuiz conversion of 
