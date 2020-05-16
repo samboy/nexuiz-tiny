@@ -71,13 +71,13 @@ which can be played for 1-on-1 games:
 
 * **Blood Prison**  This map became one of Nexuiz’s included maps starting
   with Nexuiz 2.0.  This is a small, tight, two-level map.  In the basement,
-  we have an area with a jump pad upstairs, a rocket locker, a hallway with
-  the mega health, and a teleport.  In the upper floor, we have a two 
-  elevations separated by a long stairway which spans most of the upper
-  floor.  Two mega healths and the rest of the weapons can be obtained.
-  This map is very tight, best for 1-on-1 duels.  While attempts to update
-  this map for Xonotic have been done, this is best played as a Nexuiz
-  map.  Open source.
+  we have an area with a jump pad to go upstairs (as well as stairs), a 
+  rocket locker, a hallway with the mega health, and a teleport.  The 
+  upper floor is two-tier, with a long stairway separating the tiers that
+  spans most of the upper floor.  Four medium healths and the rest of the 
+  weapons can be obtained upstairs.  This map is very tight, best for 
+  1-on-1 duels.  While attempts to update this map for Xonotic have been 
+  done, this is best played as a Nexuiz map.  Open source.
 
 * **Downer**  This is a small-to-medium sized three level map.  In the
   lowest level, we have a cave with a mega armor and the machine gun.
