@@ -39,5 +39,5 @@ nexuiz-tiny.zip: data-tiny.pk3 common-spog.pk3 aerowalk-notOpenSource.pk3 \
     GPLv3-data.pk3 quintdm3-song-notOpenSource.pk3 music-BloodPrison.pk3 \
     music-Toxic.pk3
 	mkdir nexuiz-tiny ; mkdir nexuiz-tiny/data ; \
-    cp *.pk3 nexuiz-tiny/data/ ; \
+    cp *.pk3 nexuiz-tiny/data/ ; cp LICENSE.md CHANGELOG.TXT nexuiz-tiny/ ; \
     cp bin/win32/* nexuiz-tiny ; zip -r nexuiz-tiny.zip nexuiz-tiny 
