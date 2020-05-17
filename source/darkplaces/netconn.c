@@ -26,6 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define QWMASTER_PORT 27000
 #define DPMASTER_PORT 27950
 
+// Samiam's note: I have disabled looking for servers on the Internet 
+// because this size-optimized version of Nexuiz is not compatible 
+// with servers on the Internet using Nexuiz 2.5.2. 
+
 // note this defaults on for dedicated servers, off for listen servers
 cvar_t sv_public = {0, "sv_public", "0", "1: advertises this server on the master server (so that players can find it in the server browser); 0: allow direct queries only; -1: do not respond to direct queries; -2: do not allow anyone to connect"};
 static cvar_t sv_heartbeatperiod = {CVAR_SAVE, "sv_heartbeatperiod", "120", "how often to send heartbeat in seconds (only used if sv_public is 1)"};
@@ -36,9 +40,9 @@ static cvar_t sv_masters [] =
 	{CVAR_SAVE, "sv_master2", "", "user-chosen master server 2"},
 	{CVAR_SAVE, "sv_master3", "", "user-chosen master server 3"},
 	{CVAR_SAVE, "sv_master4", "", "user-chosen master server 4"},
-	{0, "sv_masterextra1", "ghdigital.com", "default master server 1 (admin: LordHavoc)"}, // admin: LordHavoc
-	{0, "sv_masterextra2", "dpmaster.deathmask.net", "default master server 2 (admin: Willis)"}, // admin: Willis
-	{0, "sv_masterextra3", "excalibur.nvg.ntnu.no", "default master server 3 (admin: tChr)"}, // admin: tChr
+	{0, "sv_masterextra1", "ghdig.invalid", "default master server 1 (admin: LordHavoc)"}, // admin: LordHavoc
+	{0, "sv_masterextra2", "dpmaster.death.invalid", "default master server 2 (admin: Willis)"}, // admin: Willis
+	{0, "sv_masterextra3", "excalibur.nvg.invalid", "default master server 3 (admin: tChr)"}, // admin: tChr
 	{0, NULL, NULL, NULL}
 };
 

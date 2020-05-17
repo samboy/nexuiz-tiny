@@ -141,24 +141,15 @@ and used free of charge.
 
 ## Note on finding servers
 
-Nexuiz has, hard coded in the Nexuiz binary, the following master servers:
+Since this version of Nexuiz is not compatible with the Nexuiz 2.5.2
+servers one may find on the Internet, and since no one is playing
+on those servers anyway, I have disabled the ability for this version
+of Nexuiz to find servers on the Internet.
 
-```
-ghdigital.com
-dpmaster.deathmask.net
-excalibur.nvg.ntnu.no
-```
+Nexuiz still looks for servers on the local network — Nexuiz is a LAN
+party compatible game.  
 
-These servers are used to find Nexuiz servers to connect to on the
-Internet, and are, as of the COVID-19 crisis in 2020, still active.  
-If it is not desired to connect to these servers, they may be blacklisted 
-(e.g. by black listing these names with MaraDNS’s blacklist feature).
-
-### LAN Party compatible
-
-Even if all three of these master servers were down (or blocked), Nexuiz
-still looks for servers on the local network — Nexuiz is a LAN party
-compatible game.  However, as I type these words, we are in the middle
-of the COVID-19 pandemic, so I can not recommend going to a LAN party
-right now.
+However, as I type these words, we are in the middle of the COVID-19
+pandemic, so I can not recommend going to a LAN party right now.  But,
+once the crisis is over, LAN party away.
 
