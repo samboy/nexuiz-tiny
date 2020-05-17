@@ -72,7 +72,7 @@ which can be played for 1-on-1 games:
 * **Blood Prison**  This map became one of Nexuiz’s included maps starting
   with Nexuiz 2.0.  This is a small, tight, two-level map.  In the basement,
   we have an area with a jump pad to go upstairs (as well as stairs), a 
-  rocket locker, a hallway with the mega health, and a teleport.  The 
+  rocket launcher, a hallway with the mega health, and a teleport.  The 
   upper floor is two-tier, with a long stairway separating the tiers that
   spans most of the upper floor.  Four medium healths and the rest of the 
   weapons can be obtained upstairs.  This map is very tight, best for 
