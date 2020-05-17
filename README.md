@@ -139,3 +139,18 @@ one can not distribute this on any for-sale media, and can only distribute
 this over the Internet and “BBS systems”), the map can be downloaded 
 and used free of charge. 
 
+## Note on finding servers on the Internet
+
+Nexuiz has, hard coded in the Nexuiz binary, the following master servers:
+
+```
+ghdigital.com
+dpmaster.deathmask.net
+excalibur.nvg.ntnu.no
+```
+
+These servers are used to find Nexuiz servers to connect to on the
+Internet, and are, as of the COVID-19 crisis in 2020, still active.  
+If it is not desired to connect to these servers, they may be blacklisted 
+(e.g. by black listing these names with MaraDNS’s blacklist feature).
+
