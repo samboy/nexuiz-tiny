@@ -14,5 +14,12 @@ from the GPL (free distribution over the Internet is allowed, but
 selling the data on a CD-rom is not allowed).  Again, a GPLv2+ 
 licensed program can load this data without the license being
 violated.  This data is in a separate directory, `non-opensource/`,
-and the resulting generated file has the name `aerowalk-notOpenSource.pk3`.
+and the resulting generated files have the names
+`aerowalk-notOpenSource.pk3` and `quintdm3-song-notOpenSource.pk3`.
+
+To comply with the GPL, the source code for this software is available
+at the following locations:
+
+https://github.com/samboy/nexuiz-tiny/
+https://sourceforge.net/projects/nexuiz-tiny/
 
