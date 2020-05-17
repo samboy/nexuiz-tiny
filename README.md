@@ -54,7 +54,7 @@ Windows version of Nexuiz.
 # Downloading the Windows binary
 
 The version of this project pre-built to run on Windows can be downloaded
-[from Sourceforge](https://sourceforge.net/projects/nexuiz-tiny/files/2020-05-16/).
+[from Sourceforge](https://sourceforge.net/projects/nexuiz-tiny/files/2020-05-17/).
 
 # The Maps
 
@@ -142,9 +142,8 @@ and used free of charge.
 ## Note on finding servers
 
 Since this version of Nexuiz is not compatible with the Nexuiz 2.5.2
-servers one may find on the Internet, and since no one is playing
-on those servers anyway, I have disabled the ability for this version
-of Nexuiz to find servers on the Internet.
+servers one may find on the Internet, I have disabled the ability for 
+this version of Nexuiz to find servers on the Internet.
 
 Nexuiz still looks for servers on the local network — Nexuiz is a LAN
 party compatible game.  
