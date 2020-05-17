@@ -139,7 +139,7 @@ one can not distribute this on any for-sale media, and can only distribute
 this over the Internet and “BBS systems”), the map can be downloaded 
 and used free of charge. 
 
-## Note on finding servers on the Internet
+## Note on finding servers
 
 Nexuiz has, hard coded in the Nexuiz binary, the following master servers:
 
@@ -153,4 +153,12 @@ These servers are used to find Nexuiz servers to connect to on the
 Internet, and are, as of the COVID-19 crisis in 2020, still active.  
 If it is not desired to connect to these servers, they may be blacklisted 
 (e.g. by black listing these names with MaraDNS’s blacklist feature).
+
+### LAN Party compatible
+
+Even if all three of these master servers were down (or blocked), Nexuiz
+still looks for servers on the local network — Nexuiz is a LAN party
+compatible game.  However, as I type these words, we are in the middle
+of the COVID-19 pandemic, so I can not recommend going to a LAN party
+right now.
 
