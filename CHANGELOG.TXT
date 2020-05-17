@@ -1,3 +1,10 @@
+2020-05-16 changes
+
+* Toxic and Blood Prison music themes are now in their own .pk3 files.
+  Both maps will use other music when the .pk3 files are removed.  This
+  allows one to easily make a version of nexuiz-tiny which fits in under
+  48 mebibytes, by simply reducing the number of songs included.
+
 2020-05-07 changes
 
 * Fix two missing textures in Toxic map
