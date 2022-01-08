@@ -1,3 +1,10 @@
+# z_allweapons.pk3
+
+If you put this in the `data/` folder, all of the maps will have all
+weapons available.
+
+Note that this file is incompatible with `z_nohealth.pk3`.
+
 # z_nohealth.pk3
 
 If you put this in the `data/` folder, all of the maps will have no 
@@ -12,3 +19,5 @@ To adjust `Health regeneration speed`:
 * Scroll down
 * Put the mouse over `Health regeneration speed`
 * Use the arrow keys and keyboard to type in `0.00`
+
+Note that this file is incompatible with `z_allweapons.pk3`.
