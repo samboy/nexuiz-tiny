@@ -1,3 +1,10 @@
+# z_2020.pk3
+
+This is simply the default items on maps (in the 2020-05-17 release) in 
+a .pk3 file.  This is similar to z_allweapons, z_nohealth, and
+z_norocketlauncher, but item placement is the same as in the
+2020-05-17 release.
+
 # z_allweapons.pk3
 
 If you put this in the `data/` folder, all of the maps will have all
