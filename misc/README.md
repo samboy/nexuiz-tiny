@@ -5,12 +5,13 @@ a .pk3 file.  This is similar to z_allweapons, z_nohealth, and
 z_norocketlauncher, but item placement is the same as in the
 2020-05-17 release.
 
-# z_allweapons.pk3
+# z_allweapons.pk3 and z_allweapons2.pk3
 
-If you put this in the `data/` folder, all of the maps will have all
-weapons available.
+If you put one of these in the `data/` folder, all of the maps will have
+all weapons available.  `z_allweapons2.pk3` ensures we still have two big
+armors in the Toxic and BloodPrison maps.
 
-Note that this file is incompatible with `z_nohealth.pk3`, 
+Note that these files are incompatible with `z_nohealth.pk3`, 
 `z_norocketlauncher.pk3`, and `z_noRLnohealth.pk3`.
 
 # z_balance.pk3
