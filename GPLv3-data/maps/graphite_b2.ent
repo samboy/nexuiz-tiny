@@ -72,7 +72,11 @@
 }
 {
 "classname" "item_armor25"
-"origin" "-160.000000 -1312.000000 304.000000"
+"origin" "-130.000000 -1312.000000 304.000000"
+}
+{
+"classname" "item_armor25"
+"origin" "-190.000000 -1312.000000 304.000000"
 }
 {
 "classname" "item_health_big"
@@ -95,11 +99,11 @@
 "origin" "192.000000 -1456.000000 80.000000"
 }
 {
-"classname" "item_health25"
+"classname" "weapon_hagar"
 "origin" "-528.000000 -640.000000 -112.000000"
 }
 {
-"classname" "item_armor25"
+"classname" "weapon_electro"
 "origin" "880.000000 -1392.000000 80.000000"
 }
 {

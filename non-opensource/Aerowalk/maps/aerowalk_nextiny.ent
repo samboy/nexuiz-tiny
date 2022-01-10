@@ -330,8 +330,8 @@
 "classname" "item_bullets"
 }
 {
-"origin" "-163.200012 355.200012 163.200012"
-"classname" "item_cells"
+"origin" "-153.200012 355.200012 163.200012"
+"classname" "weapon_electro"
 }
 {
 "model" "*6"
@@ -340,7 +340,7 @@
 }
 {
 "origin" "-460.800018 -537.600037 163.200012"
-"classname" "weapon_rocketlauncher"
+"classname" "weapon_hagar"
 }
 {
 "classname" "item_health_mega"
@@ -367,7 +367,11 @@
 }
 {
 "classname" "item_armor_body"
-"origin" "-460.800018 -112.800003 422.400024"
+"origin" "-430.800018 -112.800003 422.400024"
+}
+{
+"classname" "item_armor_body"
+"origin" "-490.800018 -112.800003 422.400024"
 }
 {
 "targetname" "t8"
