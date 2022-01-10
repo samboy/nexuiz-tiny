@@ -1,14 +1,13 @@
 textures/toxic/toxic_sky
 {
-	qer_editorimage env/strale_grey/ygrey_up.tga
-	q3map_lightimage textures/strale_grey/ygrey_up.tga
-	surfaceparm noimpact
-	surfaceparm nolightmap
-	surfaceparm nomarks
-	surfaceparm sky
-	q3map_surfacelight 150
-	q3map_sun 0.75 0.65 0.6 130 255 80
-	skyParms env/strale_grey/ygrey 128 -
+        qer_editorimage textures/skies/heaven.tga
+        surfaceparm noimpact
+        surfaceparm nolightmap
+        surfaceparm nomarks
+        surfaceparm sky
+        q3map_sun .9607843137254902 .7176470588235294 .3803921568627451 350 270 10
+        q3map_skylight 200 4
+        skyparms env/heaven/heaven - -
 }
 
 textures/toxic/toxic_grate
