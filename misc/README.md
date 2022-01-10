@@ -7,12 +7,12 @@ z_norocketlauncher, but item placement is the same as in the
 
 # z_allweapons.pk3 and z_allweapons2.pk3
 
-If you put one of these in the `data/` folder, all of the maps will have
-all weapons available.  `z_allweapons2.pk3` ensures we still have two big
-armors in the Toxic and BloodPrison maps.
+If you put one, and only one, of these in the `data/` folder, all of
+the maps will have all weapons available.  `z_allweapons2.pk3` ensures
+we still have two big armors in the Toxic and BloodPrison maps.
 
 Note that these files are incompatible with `z_nohealth.pk3`, 
-`z_norocketlauncher.pk3`, and `z_noRLnohealth.pk3`.
+`z_norocketlauncher.pk3`, `z_noRLnohealth.pk3`, and each other.
 
 # z_balance.pk3
 
@@ -46,8 +46,8 @@ To adjust `Health regeneration speed` in the game:
 * Put the mouse over `Health regeneration speed`
 * Use the arrow keys and keyboard to type in `0.00`
 
-Note that this file is incompatible with `z_allweapons.pk3`, 
-`z_norocketlauncher.pk3`, and `z_noRLnohealth.pk3`.
+Note that this file is incompatible with `z_2020.pk3`, `z_allweapons.pk3`,
+`z_allweapons2.pk3`, `z_norocketlauncher.pk3`, and `z_noRLnohealth.pk3`.
 
 # z_norocketlauncher.pk3
 
@@ -57,8 +57,8 @@ this file eliminates the rocket launcher from all maps.
 If you put this in the `data/` folder, all of the maps will have all
 weapons *except the rocket launcher* available.
 
-Note that this file is incompatible with `z_allweapons.pk3`, 
-`z_nohealth.pk3`, and `z_noRLnohealth.pk3`.
+Note that this file is incompatible with `z_2020.pk3`, `z_allweapons.pk3`,
+`z_allweapons2.pk3`, `z_nohealth.pk3`, and `z_noRLnohealth.pk3`.
 
 # z_noRLnohealth.pk3
 
@@ -72,5 +72,5 @@ fragged.
 
 See above for notes on how to adjust `Health regeneration speed`.
 
-Note that this file is incompatible with `z_allweapons.pk3`,
-`z_norocketlauncher.pk3`, and `z_nohealth.pk3`.
+Note that this file is incompatible with `z_2020.pk3`, `z_allweapons.pk3`,
+`z_allweapons2.pk3`, `z_norocketlauncher.pk3`, and `z_nohealth.pk3`.
