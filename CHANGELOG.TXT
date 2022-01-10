@@ -1,3 +1,22 @@
+2022-01-10 changes
+
+Update game rules for 2022:
+
+    * Health regeneration disabled
+    * Max health and armor capped at 250
+    * Rocket launcher made less powerful
+    * Campaign is now a harder 21-map instead of an easy five-map campaign
+    * All maps now have all weapons
+    * One Mega health moved in Blood Prison so bot has access to both MHs
+    * Rocket/blaster jump only mega armors in Aerowalk and Graphite now
+      are double mega-armors to make blaster jump worthwhile
+
+Aesthetic changes:
+
+    * Downer map now uses its original skybox
+    * Final Rage map now uses the same sky as Downer
+    * Toxic now uses the sunset "heaven" sky used by Graphite
+
 2020-05-17 changes
 
 * Disable connecting to servers on the Internet, which will not be
