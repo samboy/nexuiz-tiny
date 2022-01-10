@@ -5,14 +5,20 @@ a .pk3 file.  This is similar to z_allweapons, z_nohealth, and
 z_norocketlauncher, but item placement is the same as in the
 2020-05-17 release.
 
-# z_allweapons.pk3 and z_allweapons2.pk3
+# z_allweapons series
 
-If you put one, and only one, of these in the `data/` folder, all of
-the maps will have all weapons available.  `z_allweapons2.pk3` ensures
-we still have two big armors in the Toxic and BloodPrison maps.
+The z_allweapons series consists of the files `z_allweapons.pk3`,
+`z_allweapons2.pk3`, and `z_allweapons3.pk3`.
+
+If you put one, and only one, of these in the `data/` folder, all
+of the maps will have all weapons available.  `z_allweapons2.pk3`
+ensures we still have two big armors in the Toxic and BloodPrison maps.
+`z_allweapons3.pk3`, in addition, also puts two big armors in the hard
+to reach armor locations in Aerowalk and Graphite, to better play like
+how these maps play in games with three different levels of armor.
 
 Note that these files are incompatible with `z_nohealth.pk3`, 
-`z_norocketlauncher.pk3`, `z_noRLnohealth.pk3`, and each other.
+`z_norocketlauncher.pk3`, `z_noRLnohealth.pk3`, and one another.
 
 # z_balance.pk3
 
@@ -47,7 +53,8 @@ To adjust `Health regeneration speed` in the game:
 * Use the arrow keys and keyboard to type in `0.00`
 
 Note that this file is incompatible with `z_2020.pk3`, `z_allweapons.pk3`,
-`z_allweapons2.pk3`, `z_norocketlauncher.pk3`, and `z_noRLnohealth.pk3`.
+`z_allweapons2.pk3`, `z_allweapons3.pk3`,
+`z_norocketlauncher.pk3`, and `z_noRLnohealth.pk3`.
 
 # z_norocketlauncher.pk3
 
@@ -58,7 +65,8 @@ If you put this in the `data/` folder, all of the maps will have all
 weapons *except the rocket launcher* available.
 
 Note that this file is incompatible with `z_2020.pk3`, `z_allweapons.pk3`,
-`z_allweapons2.pk3`, `z_nohealth.pk3`, and `z_noRLnohealth.pk3`.
+`z_allweapons2.pk3`, `z_allweapons3.pk3`, `z_nohealth.pk3`, 
+and `z_noRLnohealth.pk3`.
 
 # z_noRLnohealth.pk3
 
@@ -73,4 +81,5 @@ fragged.
 See above for notes on how to adjust `Health regeneration speed`.
 
 Note that this file is incompatible with `z_2020.pk3`, `z_allweapons.pk3`,
-`z_allweapons2.pk3`, `z_norocketlauncher.pk3`, and `z_nohealth.pk3`.
+`z_allweapons2.pk3`, `z_allweapons3.pk3`, `z_norocketlauncher.pk3`, 
+and `z_nohealth.pk3`.
