@@ -18,7 +18,7 @@ Note that this file is incompatible with `z_nohealth.pk3`,
 This disables health regeneration, and lowers the maximum health and
 armor to 250.  It also makes the rocket launcher weaker.
 
-To use, put the `z_balance.pk3` file is in the `data/` folder.
+To use, put the `z_balance.pk3` file in the `data/` folder.
 
 # z_newcampaign.pk3
 
