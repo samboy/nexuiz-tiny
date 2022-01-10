@@ -1,0 +1,402 @@
+{
+"gridsize" "76.800003 76.800003 153.600006"
+"message" "Aerowalk by Preacher (Hubsters Remix II)"
+"classname" "worldspawn"
+"spawnflags" "0"
+"_lightmapscale" "2"
+}
+{
+"origin" "-672.000000 -345.600006 163.200012"
+"classname" "item_armor_shard"
+}
+{
+"classname" "item_armor_shard"
+"origin" "-672.000000 -384.000000 163.200012"
+}
+{
+"classname" "item_armor_shard"
+"origin" "-633.600037 -345.600006 163.200012"
+}
+{
+"classname" "item_armor_shard"
+"origin" "864.000061 -19.200001 163.200012"
+}
+{
+"classname" "item_armor_shard"
+"origin" "902.400024 -19.200001 163.200012"
+}
+{
+"classname" "item_armor_shard"
+"origin" "940.800049 -19.200001 163.200012"
+}
+{
+"origin" "979.200012 -19.200001 163.200012"
+"classname" "item_armor_shard"
+}
+{
+"classname" "item_armor_shard"
+"origin" "1017.600037 -19.200001 163.200012"
+}
+{
+"origin" "-633.600037 -384.000000 163.200012"
+"classname" "item_armor_shard"
+}
+{
+"classname" "item_armor_shard"
+"origin" "-652.800049 -364.800018 163.200012"
+}
+{
+"origin" "14.400001 -676.800049 542.400024"
+"noise" "sound/world/q2wind2.wav"
+"spawnflags" "1"
+"classname" "target_speaker"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "369.600006 -676.800049 542.400024"
+}
+{
+"origin" "19.200001 -556.800049 451.200012"
+"targetname" "rg"
+"classname" "misc_teleporter_dest"
+}
+{
+"angle" "180"
+"classname" "misc_teleporter_dest"
+"targetname" "25armour"
+"origin" "-388.800018 -364.800018 172.800003"
+}
+{
+"origin" "-67.200005 -172.800003 489.600006"
+"classname" "info_null"
+"targetname" "t7"
+}
+{
+"classname" "info_null"
+"origin" "-67.200005 -326.400024 489.600006"
+"targetname" "t6"
+}
+{
+"origin" "1113.600098 -350.400024 672.000000"
+"noise" "sound/world/q2wind2.wav"
+"spawnflags" "1"
+"classname" "target_speaker"
+}
+{
+"origin" "-787.200012 -364.800018 259.200012"
+"noise" "sound/world/q2wind2.wav"
+"spawnflags" "0"
+"classname" "target_speaker"
+}
+{
+"origin" "326.400024 -676.800049 163.200012"
+"noise" "sound/world/q2wind2.wav"
+"spawnflags" "1"
+"classname" "target_speaker"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "-19.200001 -676.800049 163.200012"
+}
+{
+"classname" "item_health_small"
+"origin" "1113.600098 -547.200012 163.200012"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "1171.200073 -729.600037 672.000000"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "441.600006 585.600037 748.800049"
+}
+{
+"angle" "45"
+"target" "cam1"
+"origin" "-38.400002 -432.000031 691.200012"
+"classname" "info_player_intermission"
+}
+{
+"origin" "67.200005 -316.800018 624.000000"
+"targetname" "cam1"
+"classname" "target_position"
+}
+{
+"origin" "-460.800018 -156.000000 432.000031"
+"angle" "90"
+"classname" "info_player_deathmatch"
+}
+{
+"origin" "1113.600098 -720.000000 163.200012"
+"classname" "item_health_small"
+}
+{
+"origin" "1113.600098 -604.800049 163.200012"
+"classname" "item_health_small"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/hub3_tel.wav"
+"origin" "844.800049 -768.000000 240.000015"
+}
+{
+"origin" "153.600006 163.200012 19.200001"
+"noise" "sound/world/hub3_tel.wav"
+"spawnflags" "0"
+"classname" "target_speaker"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "0"
+"noise" "sound/world/hub3_tel.wav"
+"origin" "-48.000000 -268.800018 19.200001"
+}
+{
+"origin" "384.000000 -556.800049 441.600006"
+"classname" "item_health"
+"spawnflags" "0"
+}
+{
+"classname" "item_health"
+"origin" "-134.400009 729.600037 374.400024"
+}
+{
+"origin" "-211.200012 729.600037 374.400024"
+"classname" "item_health"
+}
+{
+"classname" "item_health"
+"origin" "-172.800003 -240.000015 163.200012"
+}
+{
+"classname" "info_player_deathmatch"
+"angle" "225"
+"origin" "1118.400024 -28.800001 172.800003"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "-163.200012 -230.400009 480.000031"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "153.600006 -38.400002 700.800049"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "-460.800018 220.800003 700.800049"
+}
+{
+"classname" "target_position"
+"targetname" "jump1"
+"origin" "177.600006 374.400024 528.000000"
+}
+{
+"classname" "weapon_rocketlauncher"
+"origin" "537.600037 38.400002 441.600006"
+}
+{
+"classname" "weapon_nex"
+"origin" "192.000000 -556.800049 441.600006"
+}
+{
+"model" "*1"
+"spawnflags" "0"
+"target" "25armour"
+"classname" "trigger_teleport"
+}
+{
+"model" "*2"
+"spawnflags" "0"
+"classname" "trigger_teleport"
+"target" "rg"
+}
+{
+"model" "*3"
+"spawnflags" "0"
+"classname" "trigger_teleport"
+"target" "upper_sg"
+}
+{
+"classname" "misc_teleporter_dest"
+"targetname" "upper_sg"
+"angle" "270"
+"origin" "441.600006 144.000000 172.800003"
+}
+{
+"origin" "-273.600006 345.600006 374.400024"
+"classname" "weapon_crylink"
+}
+{
+"origin" "931.200012 -624.000000 441.600006"
+"classname" "item_rockets"
+}
+{
+"origin" "1113.600098 -460.800018 163.200012"
+"classname" "weapon_grenadelauncher"
+}
+{
+"model" "*4"
+"spawnflags" "0"
+"classname" "trigger_teleport"
+"target" "gldest"
+}
+{
+"origin" "-158.400009 436.800018 172.800003"
+"classname" "info_player_deathmatch"
+"angle" "315"
+}
+{
+"origin" "931.200012 14.400001 451.200012"
+"angle" "225"
+"classname" "info_player_deathmatch"
+}
+{
+"origin" "-48.000000 -115.200005 -67.200005"
+"classname" "item_health"
+}
+{
+"origin" "940.800049 -307.200012 163.200012"
+"classname" "item_health"
+}
+{
+"model" "*5"
+"target" "upper_gl"
+"classname" "trigger_teleport"
+}
+{
+"origin" "768.000000 -777.600037 451.200012"
+"angle" "90"
+"targetname" "upper_gl"
+"classname" "misc_teleporter_dest"
+}
+{
+"origin" "-364.800018 -364.800018 220.800003"
+"noise" "sound/world/hub3_tel.wav"
+"spawnflags" "1"
+"classname" "target_speaker"
+}
+{
+"classname" "item_botroam"
+"weight" "100"
+"origin" "-460.800018 -52.800003 412.800018"
+"spawnflags" "1"
+}
+{
+"classname" "info_player_deathmatch"
+"angle" "90"
+"origin" "192.000000 -422.400024 -57.600002"
+}
+{
+"classname" "item_health_small"
+"origin" "1113.600098 -662.400024 163.200012"
+}
+{
+"origin" "-729.600037 -364.800018 172.800003"
+"classname" "info_player_deathmatch"
+}
+{
+"origin" "76.800003 -422.400024 -67.200005"
+"classname" "item_rockets"
+}
+{
+"origin" "153.600006 0.000000 -67.200005"
+"classname" "weapon_uzi"
+}
+{
+"origin" "480.000031 -153.600006 163.200012"
+"classname" "item_bullets"
+}
+{
+"origin" "523.200012 -153.600006 441.600006"
+"classname" "item_cells"
+}
+{
+"origin" "590.400024 -153.600006 441.600006"
+"classname" "item_bullets"
+}
+{
+"origin" "-153.200012 355.200012 163.200012"
+"classname" "weapon_electro"
+}
+{
+"model" "*6"
+"target" "jump1"
+"classname" "trigger_push"
+}
+{
+"origin" "-460.800018 -537.600037 163.200012"
+"classname" "weapon_hagar"
+}
+{
+"classname" "item_health_mega"
+"origin" "153.600006 -556.800049 76.800003"
+}
+{
+"classname" "item_bullets"
+"origin" "801.600037 -614.400024 76.800003"
+}
+{
+"classname" "item_shells"
+"origin" "734.400024 -614.400024 76.800003"
+}
+{
+"origin" "518.400024 -556.800049 76.800003"
+"classname" "item_armor_combat"
+}
+{
+"origin" "1113.600098 -192.000000 537.600037"
+"targetname" "gldest"
+"angle" "270"
+"classname" "misc_teleporter_dest"
+"spawnflags" "0"
+}
+{
+"classname" "item_armor_body"
+"origin" "-430.800018 -112.800003 422.400024"
+}
+{
+"classname" "item_armor_body"
+"origin" "-490.800018 -112.800003 422.400024"
+}
+{
+"targetname" "t8"
+"classname" "info_null"
+"origin" "-7.200000 12.000000 489.600006"
+}
+{
+"origin" "48.000000 134.400009 489.600006"
+"classname" "info_null"
+"targetname" "t9"
+}
+{
+"origin" "451.200012 -326.400024 489.600006"
+"classname" "info_null"
+"targetname" "t10"
+}
+{
+"origin" "-384.000000 556.800049 700.800049"
+"noise" "sound/world/q2wind2.wav"
+"spawnflags" "1"
+"classname" "target_speaker"
+}
+{
+"classname" "target_speaker"
+"spawnflags" "1"
+"noise" "sound/world/q2wind2.wav"
+"origin" "-220.800003 633.600037 700.800049"
+}

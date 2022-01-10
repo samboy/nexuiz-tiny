@@ -1,9 +1,9 @@
 # z_2020.pk3
 
-This is simply the default items on maps (in the 2020-05-17 release) in 
-a .pk3 file.  This is similar to z_allweapons, z_nohealth, and
-z_norocketlauncher, but item placement is the same as in the
-2020-05-17 release.
+This will cause the 2022 version of nexuiz-tiny to have the
+same item placement in maps, same campaign, and same rules (health
+regeneration, more powerful rocket launcher) as the 2020 version
+of Nexuiz.
 
 # z_allweapons series
 

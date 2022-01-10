@@ -10,7 +10,7 @@
 }
 {
 "origin" "3168.000244 1536.000000 259.200010"
-"classname" "item_armor25"
+"classname" "weapon_nex"
 }
 {
 "origin" "2457.600098 1075.200073 422.400017"
@@ -74,7 +74,7 @@
 }
 {
 "angle" "180"
-"classname" "item_health25"
+"classname" "item_armor25"
 "origin" "2630.400146 1113.600098 422.400017"
 }
 {

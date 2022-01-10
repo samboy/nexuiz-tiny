@@ -116,7 +116,7 @@
 "angle" "180"
 }
 {
-"classname" "item_health25"
+"classname" "weapon_electro"
 "origin" "960 64 144"
 }
 {

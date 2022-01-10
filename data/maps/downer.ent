@@ -193,7 +193,7 @@
 "classname" "item_rockets"
 }
 {
-"classname" "weapon_shotgun"
+"classname" "weapon_crylink"
 "origin" "704 1344 216"
 }
 {
@@ -226,7 +226,7 @@
 }
 {
 "origin" "-728 296 216"
-"classname" "item_armor25"
+"classname" "weapon_nex"
 }
 {
 "origin" "-128 1632 24"
@@ -297,7 +297,7 @@
 "origin" "98 821 43"
 }
 {
-"classname" "item_rockets"
+"classname" "weapon_hagar"
 "origin" "389 889 251"
 }
 {
