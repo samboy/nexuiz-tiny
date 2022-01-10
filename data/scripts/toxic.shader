@@ -10,6 +10,18 @@ textures/toxic/toxic_sky
         skyparms env/heaven/heaven - -
 }
 
+textures/toxic/frage_sky
+{
+        qer_editorimage env/mtg/mtg_up.tga
+        surfaceparm noimpact
+        surfaceparm nolightmap
+        surfaceparm sky
+        surfaceparm nomarks
+        q3map_sun .5 .5 .7 50 0 90
+        q3map_surfacelight 150
+        skyparms env/mtg/mtg - -
+}
+
 textures/toxic/toxic_grate
 {
 	qer_editorimage textures/kaznexctf2/grate.tga
