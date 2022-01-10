@@ -13,6 +13,13 @@ weapons available.
 Note that this file is incompatible with `z_nohealth.pk3`, 
 `z_norocketlauncher.pk3`, and `z_noRLnohealth.pk3`.
 
+# z_balance.pk3
+
+This disables health regeneration, and lowers the maximum health and
+armor to 250.  It also makes the rocket launcher weaker.
+
+To use, put the `z_balance.pk3` file is in the `data/` folder.
+
 # z_newcampaign.pk3
 
 This replaces the basic, easy five-map campaign with a 21-map more 
@@ -28,7 +35,10 @@ of 0.00, it makes games more balanced by allowing a weaker player
 to have any damage they do against a stronger player be present until
 the stronger player gets fragged.
 
-To adjust `Health regeneration speed`:
+To disable health regeneration, put the `z_balance.pk3` in the
+`data/` folder.
+
+To adjust `Health regeneration speed` in the game:
 
 * Create → Game Settings → Misc
 * Scroll down
