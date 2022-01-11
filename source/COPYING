@@ -1,0 +1,20 @@
+All the files in the GPLv3 folder are licensed under version 3 of the
+GNU Public License.  
+
+All other files are licensed under version 2 of the GNU Public License.
+
+GPL-2 is a copy of version 2 of the GNU Public License.
+
+GPL-3 is a copy of version 3 of the GNU Public License.
+
+The only files which have been altered from the original version
+are downer.map and final_rage.map, which use a different name for
+sky textures.
+
+Note that the related .bsp files were altered by editing the binary .bsp
+files; the maps were *not* rebuilt.  In addition, nexuiz.exe was also
+altered to disable connecting to public servers by having the binary
+.exe file changed; this is a security fix because a 15-year-old binary
+should not be connecting to public Internet servers, and Nexuiz made
+the unusual decision to connect to servers whose names were hard coded
+in the .exe file.
