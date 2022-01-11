@@ -7,7 +7,7 @@ Update game rules for 2022:
     * Rocket launcher made less powerful
     * Campaign is now a harder 21-map instead of an easy five-map campaign
     * All maps now have all weapons
-    * One Mega health moved in Blood Prison so bot has access to both MHs
+    * One Mega armor moved in Blood Prison so bot has access to both MAs
     * Rocket/blaster jump only mega armors in Aerowalk and Graphite now
       are double mega-armors to make blaster jump worthwhile
 
