@@ -6,9 +6,7 @@ Tourney Map
 
 Players: 2
 
-Weapons: Mortar,
-Rocket Launcher, Electro, 
-Crylink, Hagar, Machine Gun
+Weapons: All
 
 Gametype: Deathmatch
 

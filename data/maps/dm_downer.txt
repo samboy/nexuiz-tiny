@@ -5,8 +5,7 @@ A multilevel map.
 
 Players: 2-4
 
-Weapons: Electro, Mortar,
-Rocket Launcher, Machine Gun
+Weapons: All
 
 Gametype: Deathmatch
 

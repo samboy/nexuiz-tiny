@@ -5,9 +5,7 @@ Medium sized vertical level
 
 Players: 2-6
 
-Weapons: Mortar, Nexgun, 
-Rocket Launcher, Crylink, 
-Hagar, Machine Gun
+Weapons: All
 
 Gametype: Deathmatch
 
