@@ -1,3 +1,13 @@
+2022-0?-?? changes
+
+Bugfix release:
+
+    * Up to date changelog
+    * Remove blaster-jump-armor start from Aerowalk, since bots at some
+      skill levels gets stuck here
+    * Update map descriptions to have accurate weapon lists: All maps now
+      have all weapons
+
 2022-01-10 changes
 
 Update game rules for 2022:
