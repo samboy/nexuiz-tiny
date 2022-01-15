@@ -130,11 +130,6 @@
 "classname" "target_position"
 }
 {
-"origin" "-460.800018 -156.000000 432.000031"
-"angle" "90"
-"classname" "info_player_deathmatch"
-}
-{
 "origin" "1113.600098 -720.000000 163.200012"
 "classname" "item_health_small"
 }
