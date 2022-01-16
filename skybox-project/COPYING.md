@@ -1,8 +1,11 @@
 # About
 
-Since we include a compiled NPM package here, here is the license for
-each and every dependency that package uses, starting at the top
-level package.
+The space-3d project includes a tangled web of dependencies.  I have gone 
+to some effort to go through the web and get the licenses for deps, but
+I can not guarantee I found them all, since space-3d borrows code in 
+many places in the code (it’s not just a matter of going down the
+`packages.json` tree, but I have done that as much as possible), and
+finding them all is difficult.
 
 # https://github.com/wwwtyro/space-3d
 
@@ -381,6 +384,29 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## https://github.com/jhermsmeier/rng.js
 
 Copyright (c) 2013 [Jonas Hermsmeier](http://jhermsmeier.de)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+## https://github.com/ashima/webgl-noise
+
+Copyright (C) 2011 by Ashima Arts (Simplex noise)
+Copyright (C) 2011-2016 by Stefan Gustavson (Classic noise and others)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
