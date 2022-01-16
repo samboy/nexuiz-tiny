@@ -14,7 +14,8 @@ The internal name of the skybox in nexuiz-tiny is `env/space/s`
 
 To generate the original skybox:
 
-* Go to https://tools.wwwtyro.net/space-3d/index.html
+* Go to https://tools.wwwtyro.net/space-3d/index.html or to index.html
+  in this directory.
 * Select seed `3d7za2x8311c`
 * Generate skybox
 
