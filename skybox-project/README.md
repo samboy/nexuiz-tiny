@@ -1,22 +1,22 @@
-# Goal
-
-Make a single compact skybox which can work in Blood Prison, Soylent, and
+This is a single compact skybox which can work in Blood Prison, Soylent, and
 Aerowalk.
 
-# Progress
+Right now, this skybox is the default skybox for Soylent.  Unlike the
+previous Soylent skybox, this skybox can also be used with Blood Prison
+or Soylent without being too much out of place.
 
-We have a skybox which works, but there are issues because 8-bit color
-images were fairly extensively edited.
+This allows us to make a smaller version of nexuiz-tiny where all three
+maps use the same skybox.
 
 # Original skybox
 
 To generate the original skybox:
 
-* Go to https://tools.wwwtyro.net/space-3d/
+* Go to https://tools.wwwtyro.net/space-3d/index.html
 * Select seed `53yb0y2wx69s`
 * Select resolution `512`
 * Generate skybox
 
 The colors have been altered (to work reasonably well in all three maps), 
-and the skybox has been rotated (so the sun is in the right place in the 
+and the skybox has been rotated (so the sun is in the right place on the 
 Blood Prison map).
