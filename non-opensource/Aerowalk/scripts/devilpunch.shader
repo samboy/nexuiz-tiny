@@ -18,5 +18,5 @@ textures/devilpunch/devpun_skybox
 	q3map_surfacelight 50
 	surfaceparm sky
 	q3map_sun 0.6 0.6 0.6 100 120 60
-	skyparms env/devilpunch/devpun - -
+	skyparms env/space/s - -
 }
