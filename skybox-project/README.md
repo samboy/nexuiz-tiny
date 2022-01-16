@@ -1,9 +1,5 @@
-This is a single compact skybox which can work in Blood Prison, Soylent, and
+This is a single compact skybox which is used in Blood Prison, Soylent, and
 Aerowalk.
-
-Right now, this skybox is the default skybox for Soylent.  Unlike the
-previous Soylent skybox, this skybox can also be used with Blood Prison
-or Aerowalk without being too much out of place.
 
 This allows us to make a smaller version of nexuiz-tiny where all three
 maps use the same skybox.
