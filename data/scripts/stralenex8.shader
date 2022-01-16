@@ -7,7 +7,7 @@ textures/stralenex8/darkblue_sky
 	surfaceparm nomarks
 	surfaceparm sky
 
-	skyparms env/stralenex8/darkblue - -
+	skyparms env/space/s - -
 	q3map_surfacelight 80
 	q3map_lightimage textures/stralenex8/darkblue_up.tga
 	q3map_sun 0.564 0.733 1 90 30 45
