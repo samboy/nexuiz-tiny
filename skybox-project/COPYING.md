@@ -5,7 +5,12 @@ to some effort to go through the web and get the licenses for deps, but
 I can not guarantee I found them all, since space-3d borrows code in 
 many places in the code (it’s not just a matter of going down the
 `packages.json` tree, but I have done that as much as possible), and
-finding them all is difficult.
+finding them all takes time.
+
+There are other licenses in the file `static/js/bundle.js` not mentioned
+here.  So far, no GPL [1] nor AGPL code has been found. 
+
+[1] One package is GPL-or-MIT.  I chose the MIT license.
 
 # https://github.com/wwwtyro/space-3d
 
