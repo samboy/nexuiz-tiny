@@ -2,7 +2,7 @@ This is a single compact skybox which is used in Blood Prison, Soylent, and
 Aerowalk.
 
 This allows us to make a smaller version of nexuiz-tiny where all three
-maps use the same skybox.
+of those maps use the same skybox.
 
 The internal name of the skybox in nexuiz-tiny is `env/space/s`
 
