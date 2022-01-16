@@ -1,4 +1,4 @@
-2022-0?-?? changes
+2022-01-15 changes
 
 Bugfix release:
 
@@ -7,6 +7,12 @@ Bugfix release:
       skill levels gets stuck here
     * Update map descriptions to have accurate weapon lists: All maps now
       have all weapons
+
+Skybox update:
+
+    * Created new skybox which is now used in Aerowalk, Blood Prison, and
+      Soylent.  This reduces the number of sky boxes down to three.
+    * Moved old Soylent, Aerowalk, and Blood Prison sky boxes to attic.
 
 2022-01-10 changes
 
