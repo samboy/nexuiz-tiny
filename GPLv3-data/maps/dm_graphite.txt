@@ -1,5 +1,5 @@
-Graphite (dm_graphite_b2)
-maps/graphite_b2
+Graphite (dm_graphite)
+maps/graphite
 
 Small map with fast
 two level action.
