@@ -1,3 +1,14 @@
+2022-01-18 changes
+
+    * Heaven skybox removed; this saves about a megabyte.
+    * Toxic now uses the space skybox.
+    * Graphite now uses the space skybox.  In order to have the map look
+      good with this skybox, I have rebuilt Graphite in NetRadient with
+      the new skybox and its shader so that its lighting is consistent 
+      with the space skybox.
+    * Shader for space skybox added.
+    * Script to make Xonotic package for space skybox added.
+
 2022-01-15 changes
 
 Bugfix release:
