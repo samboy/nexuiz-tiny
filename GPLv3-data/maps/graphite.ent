@@ -56,7 +56,7 @@
 }
 {
 "classname" "weapon_crylink"
-"origin" "-544.000000 160.000000 -112.000000"
+"origin" "-544.000000 140.000000 -112.000000"
 }
 {
 "classname" "weapon_nex"
