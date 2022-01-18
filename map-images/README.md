@@ -14,3 +14,10 @@ fly
 
 Where ${NAME} is one of `aerowalk_nextiny`, `bloodprison`, `final_rage`,
 `graphite`, `soylent`, or `toxic`.
+
+Use F12 to take the screenshot.
+
+The screenshots are too dark; I open them up in Gimp to make them
+brighter (brightness 75, contrast 50 for all except the Graphite
+screenshot).
+
