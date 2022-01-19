@@ -1,3 +1,9 @@
+2022-01-19 changes
+
+    * Hotfix: Recompile Graphite BSP with “bounce” of 8 to remove texture
+      flicker.
+    * Add directions on how to compile the graphite.map file
+
 2022-01-18 changes
 
     * Heaven skybox removed; this saves about a megabyte.
