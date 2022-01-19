@@ -17,3 +17,12 @@ To generate the original skybox:
 
 The skybox has been rotated so the sun (moon?) is in roughly the right 
 place on the Blood Prison map.
+
+# Making a skybox to build the Graphite map
+
+We have to add a skybox to the Xonotic assets to correctly build the
+Graphite map.
+
+To do this, run the `make.xonotic.shader.sh` shell script; make sure
+to have the `zip` utility.
+

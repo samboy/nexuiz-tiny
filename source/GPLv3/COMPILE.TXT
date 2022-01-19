@@ -1,0 +1,8 @@
+    * Install Xonotic 0.8.2
+    * In the skybox-project directory, run the make.xonotic.shader.sh script
+    * Place the resulting nexuizspace.pk3 in Xonotic’s data/ folder
+    * Get NetRadient
+    * Open up graphite.map in NetRadient
+    * In NetRadient, build a final map using Xonotic defaults with bounce 8
+    * Grab a cup of coffee or two
+    * After a few minutes, a finished graphite.bsp will be ready
