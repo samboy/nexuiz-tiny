@@ -1,0 +1,16 @@
+Files Here:
+
+z_2020.pk3 =========================================================
+
+This will cause the 2022 version of nexuiz-tiny to have the
+same item placement in maps, same campaign, and same rules (health
+regeneration, more powerful rocket launcher) as the 2020 version
+of Nexuiz.
+
+To install, place this file in the data/ folder.
+
+z_nohealth.pk3 =====================================================
+
+This removes all health from maps.
+
+To install, place this file in the data/ folder.

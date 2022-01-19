@@ -3,6 +3,7 @@
     * Hotfix: Recompile Graphite BSP with “bounce” of 8 to remove texture
       flicker.
     * Add directions on how to compile the graphite.map file
+    * Add z_2020.pk3 and a z_nohealth.pk3 file to nexuiz-tiny package
 
 2022-01-18 changes
 
